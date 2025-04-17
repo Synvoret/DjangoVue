@@ -1,0 +1,39 @@
+# System
+*.DS_Store
+*.log
+*.pyc
+__pycache__/
+venv/
+
+# Node
+node_modules/
+dist/
+*.local
+
+# Django (backend/)
+back_end/db.sqlite3
+back_end/static/
+back_end/media/
+back_end/*.pyc
+back_end/__pycache__/
+back_end/.env
+back_end/.venv
+
+# Vue (frontend/)
+front_end/node_modules/
+front_end/dist/
+
+# PyCharm / VSCode / etc.
+.idea/
+.vscode/
+*.swp
+
+# Coverage and testing
+htmlcov/
+.coverage
+coverage.xml
+*.cover
+
+# Migrations (optional)
+*/migrations/*.pyc
+*/migrations/__pycache__/
