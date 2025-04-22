@@ -12,6 +12,14 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 
+# time for set JWT tokes
+from datetime import timedelta
+# loading env from file
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -27,9 +35,21 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+}
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -38,9 +58,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
-    'blog.apps.BlogConfig',
     'graphene_django',
+    'api',
+    'rest_framework',
     'corsheaders',
+
+    'blog.apps.BlogConfig',
 ]
 
 MIDDLEWARE = [
@@ -55,15 +78,15 @@ MIDDLEWARE = [
 ]
 
 GRAPHENE = {
-    "SCHEMA": "blog.schema.schema",
+    "SCHEMA": "backend.schema.schema",
 }
 
 CORS_ALLOW_ALL_ORIGINS = False
-
+CORS_ALLOWS_CREDENTIALS = True # for cookies
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "httP://127.0.0.1:5173",
-    ]
+]
 
 ROOT_URLCONF = 'backend.urls'
 
@@ -94,6 +117,17 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': os.getenv("DB_NAME"),
+#         "USER": os.getenv("DB_USER"),
+#         "PASSWORD": os.getenv("DB_PWD"),
+#         "HOST": os.getenv("DB_HOST"),
+#         "PORT": os.getenv("DB_PORT"),
+#     }
+# }
 
 
 # Password validation
