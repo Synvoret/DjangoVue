@@ -1,4 +1,5 @@
 import graphene
+from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 from graphene_django import DjangoObjectType
 from blog import models
@@ -38,6 +39,8 @@ class Query(graphene.ObjectType):
     posts_by_tag = graphene.List(PostType, tag=graphene.String())
     # CRUD
     items = graphene.List(ItemType)
+    # PROFILEs
+    profiles = graphene.List(AuthorType)
 
     def resolve_all_posts(root, info):
         return (
@@ -73,6 +76,10 @@ class Query(graphene.ObjectType):
     # CRUD
     def resolve_items(self, info, **kwargs):
         return models.Item.objects.all()
+    
+    # PROFILEs
+    def resolve_profiles(self, info):
+        return models.Profile.objects.all()
 
 
 # CRUD
@@ -128,10 +135,33 @@ class DeleteItem(graphene.Mutation):
             raise Exception(f"Error occured: {str(e)}.")
 
 
+# PROFILEs
+class CreateProfile(graphene.Mutation):
+    profile = graphene.Field(AuthorType)
+
+    class Arguments:
+        username = graphene.String(required=True)
+        password = graphene.String(required=True)
+        website = graphene.String()
+        bio = graphene.String()
+    
+    def mutate(self, info, username, password, website=None, bio=None):
+        user, created = User.objects.get_or_create(username=username)
+        if created:
+            user.set_password(password)
+            user.save()
+        profile = models.Profile(user=user, website=website, bio=bio)
+        profile.save()
+        return CreateProfile(profile=profile)
+
+
 class Mutation(graphene.ObjectType):
+    # CRUD
     create_item = CreateItem.Field()
     update_item = UpdateItem.Field()
     delete_item = DeleteItem.Field()
+    # PROFILEs
+    create_profile = CreateProfile.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

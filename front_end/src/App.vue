@@ -9,6 +9,8 @@
       <nav>
         <RouterLink to="/">Posts</RouterLink>
         <RouterLink to="/items">Items</RouterLink>
+        <RouterLink to="/login">Login</RouterLink>
+        <routerLink to="/register">Register</routerLink>
         <!-- Remove the links to 'author', 'post', and 'tag' -->
       </nav>
     </div>
