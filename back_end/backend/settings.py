@@ -12,11 +12,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 
-# time for set JWT tokes
-from datetime import timedelta
 # loading env from file
 from dotenv import load_dotenv
-import os
 
 load_dotenv()
 
@@ -35,20 +32,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
-    ),
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticated",
-    ],
-}
-
-SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
-}
-
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -59,8 +42,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     'graphene_django',
-    'api',
-    'rest_framework',
     'corsheaders',
 
     'blog.apps.BlogConfig',
