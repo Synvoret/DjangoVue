@@ -1,6 +1,6 @@
 import graphene
 from django.contrib.auth.models import User
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate
 from graphene_django import DjangoObjectType
 from blog import models
 
@@ -155,6 +155,21 @@ class CreateProfile(graphene.Mutation):
         return CreateProfile(profile=profile)
 
 
+class LoginProfile(graphene.Mutation):
+    profile = graphene.Field(AuthorType)
+
+    class Arguments:
+        username = graphene.String(required=True)
+        password = graphene.String(required=True)
+
+    def mutate(self, info, username, password):
+        user = authenticate(username=username, password=password)
+        if user is None:
+            raise Exception('Invalid credentials.')
+        profile = models.Profile.objects.get(user=user)
+        return LoginProfile(profile=profile)
+
+
 class Mutation(graphene.ObjectType):
     # CRUD
     create_item = CreateItem.Field()
@@ -162,6 +177,7 @@ class Mutation(graphene.ObjectType):
     delete_item = DeleteItem.Field()
     # PROFILEs
     create_profile = CreateProfile.Field()
+    login_profile = LoginProfile.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
