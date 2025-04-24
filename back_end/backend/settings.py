@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from corsheaders.defaults import default_headers
 
 # loading env from file
 from dotenv import load_dotenv
@@ -68,6 +69,17 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "httP://127.0.0.1:5173",
 ]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+]
+
+CORS_ALLOW_HEADERS = list(default_headers) + ['contenttype',]
+
+# CORS_ORIGIN_WHITELIST = (
+#     "http://localhost:5173",
+#     "httP://127.0.0.1:5173",
+# )
 
 ROOT_URLCONF = 'backend.urls'
 

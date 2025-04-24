@@ -37,3 +37,10 @@ class Post(models.Model):
 
     class Meta:
         ordering = ["-publish_date"]
+
+
+# CRUD
+class Item(models.Model):
+    name = models.CharField(max_length=500)
+    description = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
