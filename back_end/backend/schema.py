@@ -1,6 +1,6 @@
 import graphene
 from django.contrib.auth.models import User
-from django.contrib.auth import get_user_model, authenticate
+from django.contrib.auth import get_user_model, authenticate, login
 from graphene_django import DjangoObjectType
 from blog import models
 
@@ -166,6 +166,7 @@ class LoginProfile(graphene.Mutation):
         user = authenticate(username=username, password=password)
         if user is None:
             raise Exception('Invalid credentials.')
+        login(info.context, user) # login user and session open
         profile = models.Profile.objects.get(user=user)
         return LoginProfile(profile=profile)
 

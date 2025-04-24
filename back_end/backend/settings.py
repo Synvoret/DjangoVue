@@ -63,18 +63,31 @@ GRAPHENE = {
     "SCHEMA": "backend.schema.schema",
 }
 
-CORS_ALLOW_ALL_ORIGINS = False
-CORS_ALLOWS_CREDENTIALS = True # for cookies
+# SESSION (24h)
+SESSION_COOKIE_AGE = 86400
+
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True # for cookies
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
-    "httP://127.0.0.1:5173",
+    "http://127.0.0.1:5173",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
+    "http://127.0.0.1:5173",
 ]
 
-CORS_ALLOW_HEADERS = list(default_headers) + ['contenttype',]
+CSRF_COOKIE_SAMESITE = "None"
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = "None"
+SESSION_COOKIE_SECURE = True
+
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    'content-type',
+    'authorization',
+    'x-csrftoken',
+]
 
 # CORS_ORIGIN_WHITELIST = (
 #     "http://localhost:5173",

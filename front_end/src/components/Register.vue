@@ -9,7 +9,7 @@
     const bio = ref('');
     const success = ref(false);
 
-    const { mutate: createProfile } = useMutation(
+    const { mutate: createProfile, loading, error } = useMutation(
         gql`
             mutation CreateProfile($username: String!, $password: String!, $website: String, $bio: String) {
                 createProfile(username: $username, password: $password, website: $website, bio: $bio) {

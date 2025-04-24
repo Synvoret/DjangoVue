@@ -8,7 +8,7 @@
     const success = ref(false);
     const loggedProfile = ref(null);
 
-    const { mutate: loginProfile } = useMutation(
+    const { mutate: loginProfile, loading, error } = useMutation(
         gql`
             mutation LoginProfile($username: String!, $password: String!) {
                 loginProfile(username: $username, password: $password) {
@@ -27,7 +27,6 @@
                 username: username.value,
                 password: password.value,
             });
-            console.log(response.data)
             success.value = true;
             loggedProfile.value = response.data.loginProfile.profile
             setTimeout(() => {
