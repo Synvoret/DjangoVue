@@ -3,6 +3,8 @@ import AuthorView from "../views/AuthorView.vue";
 import AllPostsView from "../views/AllPostsView.vue";
 import PostView from "../views/PostView.vue";
 import PostsByTagView from "../views/PostsByTagView.vue";
+// CRUD
+import ItemList from "../views/ItemList.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,6 +28,12 @@ const router = createRouter({
       path: "/tag/:tag",
       name: "tag",
       component: PostsByTagView,
+    },
+    // CRUD
+    {
+      path: "/items",
+      name: "items",
+      component: ItemList,
     },
   ],
 });

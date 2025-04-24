@@ -5,15 +5,17 @@
 <template>
   <header>
     <div class="wrapper">
-      <h1>My Blog 🐾</h1>
+      <h1>Blog</h1>
       <nav>
         <RouterLink to="/">Posts</RouterLink>
+        <RouterLink to="/items">Items</RouterLink>
         <!-- Remove the links to 'author', 'post', and 'tag' -->
       </nav>
     </div>
   </header>
 
-  <RouterView />
+  <div><RouterView /></div>
+
 </template>
 
 <!-- ... -->

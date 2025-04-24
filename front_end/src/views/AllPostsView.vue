@@ -18,7 +18,7 @@
             }
         }
     `);
-    console.error(error.value)
+    // console.error(error.value)
 </script>
 
 <template>
