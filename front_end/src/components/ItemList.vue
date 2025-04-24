@@ -16,6 +16,9 @@
     const localItems = ref([...props.items]);
     const isCreating = ref(false);
     const newItem = ref({ name: '', description: '' });
+    const editingItem = ref(null);
+    const editedItem = ref({ name: '', description: ''});
+
     const { mutate: createItem } = useMutation(
         gql`
             mutation CreateItem($name: String!, $description: String!) {
@@ -28,6 +31,27 @@
                 }
             }
         `);
+    const { mutate: updateItem } = useMutation(
+        gql`
+            mutation UpdateItem($id: ID!, $name: String!, $description: String!) {
+                updateItem(id: $id, name: $name, description: $description) {
+                    item {
+                        id
+                        name
+                        description
+                    }
+                }
+            }
+        `);
+    const { mutate: deleteItem } = useMutation(
+        gql`
+            mutation DeleteItem($id: ID!) {
+                deleteItem(id: $id) {
+                    success
+                }
+            }
+        `);
+
     function creatingItem() {
         isCreating.value = true;
     }
@@ -46,17 +70,60 @@
             newItem.value = { name: '', description: ''};
             isCreating.value = false;
         } catch (error) {
-            console.error("GraphQL Error:", error)
+            console.error("GraphQL Error:", error);
+        }
+    }
+    function cancelCreating() {
+        isCreating.value = false;
+        newItem.value = { name: '', description: ''};
+    }
+    function startEditing(item) {
+        editingItem.value = item.id;
+        editedItem.value = { ...item };
+    }
+    async function saveEditedItem() {
+        if (!editedItem.value.name || !editedItem.value.description) return;
+        try {
+            const response = await updateItem({
+                id: editingItem.value,
+                name: editedItem.value.name,
+                description: editedItem.value.description,
+            });
+            if (props.refetch) {
+                await props.refetch();
+            };
+            const updatedItem = response.data.updateItem.item;
+            const index = localItems.value.findIndex(item => item.id === updateItem.id);
+            localItems.value[index] = updatedItem;
+            editingItem.value = null;
+            editedItem.value = { name: '', description: ''};
+        } catch (error) {
+            console.error("GraphQL error:", error);
+        }
+    }
+    function cancelEditing() {
+        editingItem.value = null;
+        editedItem.value = { name: '', description: ''};
+    }
+    async function removeItem(itemId) {
+        try {
+            console.log("removing", itemId)
+            const response = await deleteItem({ id: itemId });
+            console.log(response)
+            if (response.data.deleteItem.success && props.refetch) {
+                console.log('ISTNIEJE', itemId)
+                await props.refetch();
+                localItems.value = localItems.value.filter(item => item.id !== itemId);
+            } else {
+                console.error("GraphQL Error:");
+            }
+        } catch (error) {
+            console.error("GraphQL Error:", error);
         }
     }
 </script>
 
 <template>
-    <!-- <ol class="item-list">
-        <li class="item" v-for="item in items" :key="item.id">
-            {{ item.name }} {{ item.description }}
-        </li>
-    </ol> -->
     <table class="item-list">
         <thead>
             <tr>
@@ -69,11 +136,15 @@
         <tbody>
             <tr class="item" v-for="(item, index) in items" :key="item.id">
                 <td>{{ index + 1 }}</td>
-                <td>{{ item.name }}</td>
-                <td>{{ item.description }}</td>
+                <td v-if="editingItem === item.id"><input v-model="editedItem.name"/></td>
+                <td v-else>{{ item.name }}</td>
+                <td v-if="editingItem === item.id"><input v-model="editedItem.description"/></td>
+                <td v-else>{{ item.description }}</td>
                 <td>
-                    <button class="edit">E</button>
-                    <button class="delete">D</button>
+                    <button class="edited" v-if="editingItem === item.id" @click="saveEditedItem">V</button>
+                    <button class="cancel" v-if="editingItem === item.id" @click="cancelEditing">X</button>
+                    <button class="edit" v-else @click="startEditing(item)">E</button>
+                    <button class="delete" @click="removeItem(item.id)">D</button>
                 </td>
             </tr>
             <tr class="item" v-if="isCreating">
@@ -82,6 +153,7 @@
                 <td><input v-model="newItem.description" placeholder="decription" /></td>
                 <td>
                     <button class="create" @click="saveNewItem">V</button>
+                    <button class="cancel" @click="cancelCreating">X</button>
                 </td>
             </tr>
             <tr class="item" v-else>
@@ -106,6 +178,12 @@
 
     button.edit:hover {
         color: blue;
+    }
+    button.edited:hover {
+        color: cyan;
+    }
+    button.cancel:hover {
+        color: orange;
     }
     button.delete:hover {
         color: red;

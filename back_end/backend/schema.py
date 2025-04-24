@@ -115,13 +115,13 @@ class DeleteItem(graphene.Mutation):
     class Arguments:
         id = graphene.ID(required=True)
     
-    item_exist = graphene.Boolean()
+    success = graphene.Boolean()
 
     def mutate(self, info, id):
         try:
             item = models.Item.objects.get(pk=id)
             item.delete()
-            return DeleteItem(item_exist=True)
+            return DeleteItem(success=True)
         except models.Item.DoesNotExist:
             raise Exception("Item not found.")
         except Exception as e:
