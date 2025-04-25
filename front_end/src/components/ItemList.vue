@@ -107,11 +107,8 @@
     }
     async function removeItem(itemId) {
         try {
-            console.log("removing", itemId)
             const response = await deleteItem({ id: itemId });
-            console.log(response)
             if (response.data.deleteItem.success && props.refetch) {
-                console.log('ISTNIEJE', itemId)
                 await props.refetch();
                 localItems.value = localItems.value.filter(item => item.id !== itemId);
             } else {
@@ -130,6 +127,7 @@
                 <th>Poz.</th>
                 <th>Name</th>
                 <th>Description</th>
+                <th>Author</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -140,8 +138,9 @@
                 <td v-else>{{ item.name }}</td>
                 <td v-if="editingItem === item.id"><input v-model="editedItem.description"/></td>
                 <td v-else>{{ item.description }}</td>
+                <td>XXX</td>
                 <td>
-                    <button class="edited" v-if="editingItem === item.id" @click="saveEditedItem">V</button>
+                    <button class="edited" v-if="editingItem === item.id" @click="saveEditedItem">A</button>
                     <button class="cancel" v-if="editingItem === item.id" @click="cancelEditing">X</button>
                     <button class="edit" v-else @click="startEditing(item)">E</button>
                     <button class="delete" @click="removeItem(item.id)">D</button>
@@ -149,15 +148,17 @@
             </tr>
             <tr class="item" v-if="isCreating">
                 <td>{{ items.length + 1 }}</td>
-                <td><input v-model="newItem.name" placeholder="name" autofocus/></td>
-                <td><input v-model="newItem.description" placeholder="decription" /></td>
+                <td><input v-model="newItem.name" placeholder="*name" autofocus/></td>
+                <td><input v-model="newItem.description" placeholder="*decription"/></td>
+                <td>aaa</td>
                 <td>
-                    <button class="create" @click="saveNewItem">V</button>
+                    <button class="create" @click="saveNewItem">A</button>
                     <button class="cancel" @click="cancelCreating">X</button>
                 </td>
             </tr>
             <tr class="item" v-else>
                 <td>{{ items.length + 1 }}</td>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td>
@@ -166,6 +167,7 @@
             </tr>
         </tbody>
     </table>
+    <div><label class="required" v-if="isCreating">* - required</label></div>
 </template>
 
 <style scoped>
@@ -201,6 +203,11 @@
         width: 80px;
         box-sizing: border-box;
         cursor: text;
+    }
+
+    label.required {
+        font-size: 12px;
+        font-style: italic;
     }
 
 </style>

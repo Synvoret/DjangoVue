@@ -1,14 +1,17 @@
 from django.contrib import admin
-from blog.models import Profile, Post, Tag, Item
+
+from blog.models import Item, Post, Profile, Tag
 
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
     model = Profile
 
+
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     model = Tag
+
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
@@ -40,7 +43,7 @@ class PostAdmin(admin.ModelAdmin):
         "body",
     )
     prepopulated_fields = {
-        "slug" : (
+        "slug": (
             "title",
             "subtitle",
         )

@@ -15,39 +15,74 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Tag',
+            name="Tag",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50, unique=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50, unique=True)),
             ],
         ),
         migrations.CreateModel(
-            name='Profile',
+            name="Profile",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('website', models.URLField(blank=True)),
-                ('bio', models.CharField(blank=True, max_length=240)),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.PROTECT, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("website", models.URLField(blank=True)),
+                ("bio", models.CharField(blank=True, max_length=240)),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Post',
+            name="Post",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=255, unique=True)),
-                ('subtitle', models.CharField(blank=True, max_length=255)),
-                ('slug', models.SlugField(max_length=255, unique=True)),
-                ('body', models.TextField()),
-                ('meta_description', models.CharField(blank=True, max_length=250)),
-                ('date_created', models.DateTimeField(auto_now_add=True)),
-                ('date_modified', models.DateTimeField(auto_now=True)),
-                ('publish_date', models.DateTimeField(blank=True, null=True)),
-                ('published', models.BooleanField(default=False)),
-                ('author', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='blog.profile')),
-                ('tags', models.ManyToManyField(blank=True, to='blog.tag')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=255, unique=True)),
+                ("subtitle", models.CharField(blank=True, max_length=255)),
+                ("slug", models.SlugField(max_length=255, unique=True)),
+                ("body", models.TextField()),
+                ("meta_description", models.CharField(blank=True, max_length=250)),
+                ("date_created", models.DateTimeField(auto_now_add=True)),
+                ("date_modified", models.DateTimeField(auto_now=True)),
+                ("publish_date", models.DateTimeField(blank=True, null=True)),
+                ("published", models.BooleanField(default=False)),
+                (
+                    "author",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT, to="blog.profile"
+                    ),
+                ),
+                ("tags", models.ManyToManyField(blank=True, to="blog.tag")),
             ],
             options={
-                'ordering': ['-publish_date'],
+                "ordering": ["-publish_date"],
             },
         ),
     ]

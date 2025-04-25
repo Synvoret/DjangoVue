@@ -1,13 +1,14 @@
 import graphene
+from django.contrib.auth import authenticate, get_user_model, login
 from django.contrib.auth.models import User
-from django.contrib.auth import get_user_model, authenticate, login
 from graphene_django import DjangoObjectType
+
 from blog import models
 
 
 class UserType(DjangoObjectType):
     class Meta:
-        model = get_user_model()
+        model = User
 
 
 class AuthorType(DjangoObjectType):
@@ -41,45 +42,62 @@ class Query(graphene.ObjectType):
     items = graphene.List(ItemType)
     # PROFILEs
     profiles = graphene.List(AuthorType)
+    check_auth = graphene.Field(UserType)
 
     def resolve_all_posts(root, info):
         return (
-            models.Post.objects.prefetch_related("tags")
-            .select_related("author")
-            .all()
+            models.Post.objects.prefetch_related("tags").select_related("author").all()
         )
-    
+
     def resolve_author_by_username(root, info, username):
-        return models.Profile.objects.select_related("user").get(user__username=username)
-    
+        return models.Profile.objects.select_related("user").get(
+            user__username=username
+        )
+
     def resolve_post_by_slug(root, info, slug):
         return (
             models.Post.objects.prefetch_related("tags")
             .select_related("author")
             .get(slug=slug)
         )
-    
+
     def resolve_posts_by_author(root, info, username):
         return (
             models.Post.objects.prefetch_related("tags")
             .select_related("author")
             .filter(author__user__username=username)
         )
-    
+
     def resolve_posts_by_tag(root, info, tag):
         return (
             models.Post.objects.prefetch_related("tags")
             .select_related("author")
             .filter(tags__name__iexact=tag)
         )
-    
+
     # CRUD
     def resolve_items(self, info, **kwargs):
         return models.Item.objects.all()
-    
+
     # PROFILEs
     def resolve_profiles(self, info):
         return models.Profile.objects.all()
+
+    def resolve_check_auth(self, info):
+        user = info.context.user
+
+        request = info.context
+        session_key = request.session.session_key
+        is_authenticated = request.user.is_authenticated
+        print(f"🔐 SESSION KEY: {session_key}")
+        print(f"👤 USER: {request.user}, Authenticated: {is_authenticated}")
+
+        if user.is_authenticated:
+            print(user)
+            return user
+
+        print(user)
+        return None
 
 
 # CRUD
@@ -87,7 +105,7 @@ class CreateItem(graphene.Mutation):
     class Arguments:
         name = graphene.String(required=True)
         description = graphene.String()
-    
+
     item = graphene.Field(ItemType)
 
     def mutate(self, info, name, description):
@@ -101,7 +119,7 @@ class UpdateItem(graphene.Mutation):
         id = graphene.ID(required=True)
         name = graphene.String()
         description = graphene.String()
-    
+
     item = graphene.Field(ItemType)
 
     def mutate(self, info, id, name=None, description=None):
@@ -121,7 +139,7 @@ class UpdateItem(graphene.Mutation):
 class DeleteItem(graphene.Mutation):
     class Arguments:
         id = graphene.ID(required=True)
-    
+
     success = graphene.Boolean()
 
     def mutate(self, info, id):
@@ -137,26 +155,24 @@ class DeleteItem(graphene.Mutation):
 
 # PROFILEs
 class CreateProfile(graphene.Mutation):
-    profile = graphene.Field(AuthorType)
+    user = graphene.Field(AuthorType)
 
     class Arguments:
         username = graphene.String(required=True)
         password = graphene.String(required=True)
         website = graphene.String()
         bio = graphene.String()
-    
+
     def mutate(self, info, username, password, website=None, bio=None):
-        user, created = User.objects.get_or_create(username=username)
-        if created:
-            user.set_password(password)
-            user.save()
-        profile = models.Profile(user=user, website=website, bio=bio)
-        profile.save()
-        return CreateProfile(profile=profile)
+        if User.objects.filter(username=username).exists():
+            raise Exception('Username already taken.')
+        user = User.objects.create_user(username=username, password=password)
+        profile = models.Profile.objects.create(user=user, website=website, bio=bio)
+        return CreateProfile(user=profile)
 
 
-class LoginProfile(graphene.Mutation):
-    profile = graphene.Field(AuthorType)
+class LoginUser(graphene.Mutation):
+    user = graphene.Field(UserType)
 
     class Arguments:
         username = graphene.String(required=True)
@@ -165,10 +181,15 @@ class LoginProfile(graphene.Mutation):
     def mutate(self, info, username, password):
         user = authenticate(username=username, password=password)
         if user is None:
-            raise Exception('Invalid credentials.')
-        login(info.context, user) # login user and session open
-        profile = models.Profile.objects.get(user=user)
-        return LoginProfile(profile=profile)
+            raise Exception("Invalid credentials.")
+        login(info.context, user)  # login user and session open
+        request = info.context
+        session_key = request.session.session_key
+        is_authenticated = request.user.is_authenticated
+
+        print(f"🔐 SESSION KEY: {session_key}")
+        print(f"👤 USER: {request.user}, Authenticated: {is_authenticated}")
+        return LoginUser(user=user)
 
 
 class Mutation(graphene.ObjectType):
@@ -178,7 +199,7 @@ class Mutation(graphene.ObjectType):
     delete_item = DeleteItem.Field()
     # PROFILEs
     create_profile = CreateProfile.Field()
-    login_profile = LoginProfile.Field()
+    login_user = LoginUser.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

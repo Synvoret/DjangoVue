@@ -11,6 +11,7 @@ dist/
 *.local
 
 # Django (backend/)
+back_end/.mypy_cache
 back_end/db.sqlite3
 back_end/static/
 back_end/media/

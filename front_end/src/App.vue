@@ -1,5 +1,9 @@
 <script setup>
+  import { provide, ref } from 'vue'; 
   import { RouterLink, RouterView } from "vue-router";
+
+  const loggedProfile = ref(null);
+  provide('loggedProfile', loggedProfile);
 </script>
 
 <template>
@@ -9,9 +13,8 @@
       <nav>
         <RouterLink to="/">Posts</RouterLink>
         <RouterLink to="/items">Items</RouterLink>
-        <RouterLink to="/login">Login</RouterLink>
-        <routerLink to="/register">Register</routerLink>
-        <!-- Remove the links to 'author', 'post', and 'tag' -->
+        <RouterLink :to="loggedProfile ? '/logout' : '/login'">{{ loggedProfile ? 'Logout' : 'Login'}} <span class="username" v-if="loggedProfile">{{ loggedProfile }}</span></RouterLink>
+        <RouterLink to="/register">Register</RouterLink>
       </nav>
     </div>
   </header>
@@ -38,5 +41,10 @@
   }
   nav a {
     padding: 0.5rem;
+  }
+  span.username {
+    font-style: italic;
+    font-size: 12px;
+    vertical-align: super;
   }
 </style>

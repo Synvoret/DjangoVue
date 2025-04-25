@@ -9,14 +9,14 @@
     const bio = ref('');
     const success = ref(false);
 
-    const { mutate: createProfile, loading, error } = useMutation(
+    const { mutate: CreateProfile, loading, error } = useMutation(
         gql`
             mutation CreateProfile($username: String!, $password: String!, $website: String, $bio: String) {
                 createProfile(username: $username, password: $password, website: $website, bio: $bio) {
-                    profile {
+                    user {
+                        id
                         user {
                             username
-                            password
                         }
                         website
                         bio
@@ -26,14 +26,14 @@
         `);
     async function registerProfile() {
         try {
-            const response = await createProfile({
+            const response = await CreateProfile({
                 username: username.value,
                 password: password.value,
                 website: website.value,
                 bio: bio.value,
             });
             success.value = true;
-            const createdProfile = response.data.createProfile.profile;
+            const createdProfile = response.data.CreateProfile.profile;
             console.log(createdProfile)
         } catch (error) {
             console.error("GraphQL Error:", error);
@@ -44,11 +44,11 @@
 <template>
     <form @submit.prevent="registerProfile">
         <div>
-            <label for="username">Username: </label>
+            <label for="username">*Username: </label>
             <input type="text" v-model="username" placeholder="username" required/>
         </div>
         <div>
-            <label for="password">Password: </label>
+            <label for="password">*Password: </label>
             <input type="password" v-model="password" placeholder="password" required/>
         </div>
         <div>
@@ -59,9 +59,17 @@
             <label for="bio">Bio: </label>
             <input type="text" v-model="bio" placeholder="bio"/>
         </div>
+        <div><label class="required">* - required</label></div>
         <button type="submit">Register</button>
     </form>
     <div v-if="loading">Loading...</div>
     <div v-else-if="error">{{ error.message }}</div>
     <div v-else-if="success">Profile created.</div>
 </template>
+
+<style scoped>
+    label.required {
+        font-size: 12px;
+        font-style: italic;
+    }
+</style>

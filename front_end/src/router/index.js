@@ -48,6 +48,11 @@ const router = createRouter({
       path: "/login",
       name: "login",
       component: LoginView
+    },
+    {
+      path: "/logout",
+      name: 'logout',
+      component: LoginView
     }
   ],
 });

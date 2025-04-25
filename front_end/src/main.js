@@ -13,11 +13,19 @@ import { DefaultApolloClient } from "@vue/apollo-composable";
 const httpLink = createHttpLink({
     uri: "http://localhost:8000/graphql/",
     // uri: "http://127.0.0.1:8000/graphql/",
-    headers: {
-        'Content-Type': 'application/json'
-    },
     credentials: 'include', // for cookies
+    headers: {
+        'content-type': 'application/json',
+        'x-csrftoken': getCookie('csrftoken'),
+    },
 });
+
+function getCookie(name) {
+    let value = '; ' + document.cookie;
+    let parts = value.split('; ' + name + '=');
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return '';
+}
 
 const cache = new InMemoryCache();
 
