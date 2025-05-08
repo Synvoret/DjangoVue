@@ -4,6 +4,7 @@
 *.pyc
 __pycache__/
 venv/
+.gitignore
 
 # Node
 node_modules/

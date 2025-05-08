@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 
 from corsheaders.defaults import default_headers
+
 # loading env from file
 from dotenv import load_dotenv
 
@@ -59,7 +60,15 @@ MIDDLEWARE = [
 
 GRAPHENE = {
     "SCHEMA": "backend.schema.schema",
+    # "MIDDLEWARE": [
+    #     "graphql_jwt.middleware.JSONWebTokenMiddleware",
+    # ]
 }
+
+# AUTHENTICATION_BACKENDS = [
+#     "graphql_jwt.backends.JSONWebTokenBackend",
+#     "django.contrib.auth.backends.ModelBackend",
+# ]
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True  # for cookies
@@ -73,17 +82,14 @@ CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:5173",
 ]
 
+CSRF_COOKIE_SAMESITE = "None"
+CSRF_COOKIE_SECURE = True
 # SESSION (24h)
 SESSION_COOKIE_AGE = 86400
-# SESSION_COOKIE_AGE = 5
-# CSRF_COOKIE_HTTPONLY = True
-# SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_SAMESITE = 'None'
-SESSION_COOKIE_SECURE = False
-CSRF_COOKIE_SAMESITE = "None"
-CSRF_COOKIE_SECURE = False
-SESSION_COOKIE_NAME = 'sessionID'
-SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_SAMESITE = "None"
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_NAME = "sessionID"
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
 
 CORS_ALLOW_HEADERS = list(default_headers) + [
     "content-type",

@@ -10,6 +10,11 @@
                     id
                     name
                     description
+                    author {
+                        user {
+                            username
+                        }
+                    }
                 }
             }
         `);
@@ -17,8 +22,8 @@
 
 <template>
     <h2>Item List</h2>
-    <div v-if="loading">Loading...</div>
-    <div v-else-if="error" class="warn">{{ error.message }}</div>
+    <p v-if="loading">Loading...</p>
+    <p v-else-if="error" class="warn">{{ error.message }}</p>
     <ItemList v-else :items="result.items" :refetch="refetch"/>
 </template>
 

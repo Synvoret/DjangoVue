@@ -1,50 +1,39 @@
 <script setup>
-  import { provide, ref } from 'vue'; 
-  import { RouterLink, RouterView } from "vue-router";
+  import { ref, provide, watch } from 'vue';
+  import { RouterView } from "vue-router";
+  import Header from './components/Header.vue';
+  import { provideApolloClient, useQuery } from '@vue/apollo-composable';
+  import apolloClient from '@/apollo';
+  import gql from 'graphql-tag';
 
-  const loggedProfile = ref(null);
-  provide('loggedProfile', loggedProfile);
+  const currentUser = ref(null);
+  const isAuthenticated = ref(false);
+
+  provide('currentUser', currentUser);
+  provide('isAuthenticated', isAuthenticated);
+
+  provideApolloClient(apolloClient);
+  const { result: authResult } = useQuery(gql`
+    query CheckAuth {
+      checkAuth {
+        isActive
+        username
+      }
+    }
+  `, null, { fetchPolicy: 'network-only' });
+
+  watch(authResult, (newResult) => {
+    if (newResult?.checkAuth?.isActive) {
+      isAuthenticated.value = true;
+      currentUser.value = newResult.checkAuth.username;
+    } else {
+      isAuthenticated.value = false;
+      currentUser.value = null;
+    }
+  });
 </script>
 
 <template>
-  <header>
-    <div class="wrapper">
-      <h1>Blog</h1>
-      <nav>
-        <RouterLink to="/">Posts</RouterLink>
-        <RouterLink to="/items">Items</RouterLink>
-        <RouterLink :to="loggedProfile ? '/logout' : '/login'">{{ loggedProfile ? 'Logout' : 'Login'}} <span class="username" v-if="loggedProfile">{{ loggedProfile }}</span></RouterLink>
-        <RouterLink to="/register">Register</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <div><RouterView /></div>
-
+  <Header />
+  <RouterView />
 </template>
-
-<!-- ... -->
-
-<style scoped>
-  h1 {
-    text-align: center;
-    font-weight: bold;
-    margin-bottom: 1rem;
-  }
-  header {
-    border-bottom: 1px solid #ccc;
-    margin-bottom: 1rem;
-  }
-  nav {
-    text-align: center;
-    margin: 1rem 0;
-  }
-  nav a {
-    padding: 0.5rem;
-  }
-  span.username {
-    font-style: italic;
-    font-size: 12px;
-    vertical-align: super;
-  }
-</style>

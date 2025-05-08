@@ -4,6 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "lint:py": "flake8 .","format:py": "black . && isort .",
+    "check:py": "npm run format:py && npm run lint:py",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"

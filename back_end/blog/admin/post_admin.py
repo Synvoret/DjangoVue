@@ -1,16 +1,6 @@
 from django.contrib import admin
 
-from blog.models import Item, Post, Profile, Tag
-
-
-@admin.register(Profile)
-class ProfileAdmin(admin.ModelAdmin):
-    model = Profile
-
-
-@admin.register(Tag)
-class TagAdmin(admin.ModelAdmin):
-    model = Tag
+from blog.models import Post
 
 
 @admin.register(Post)
@@ -50,10 +40,3 @@ class PostAdmin(admin.ModelAdmin):
     }
     date_hierarchy = "publish_date"
     save_on_top = True
-
-
-# CRUD
-@admin.register(Item)
-class ItemAdmin(admin.ModelAdmin):
-    model = Item
-    list_display = ["id", "name", "description"]

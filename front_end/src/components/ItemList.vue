@@ -1,7 +1,7 @@
 <script setup>
-    import { ref } from 'vue';
+    import { ref, inject } from 'vue';
     import { useMutation } from "@vue/apollo-composable";
-    import gql from "graphql-tag"; 
+    import gql from "graphql-tag";
 
     const props = defineProps({
         items: {
@@ -18,7 +18,9 @@
     const newItem = ref({ name: '', description: '' });
     const editingItem = ref(null);
     const editedItem = ref({ name: '', description: ''});
-
+    const currentUser = inject('currentUser');
+    const isAuthenticated = inject('isAuthenticated');
+    
     const { mutate: createItem } = useMutation(
         gql`
             mutation CreateItem($name: String!, $description: String!) {
@@ -27,6 +29,11 @@
                         id
                         name
                         description
+                        author {
+                            user {
+                                username
+                            }
+                        }
                     }
                 }
             }
@@ -51,10 +58,9 @@
                 }
             }
         `);
-
     function creatingItem() {
         isCreating.value = true;
-    }
+    };
     async function saveNewItem() {
         if (!newItem.value.name || !newItem.value.description ) return;
         try {
@@ -72,11 +78,11 @@
         } catch (error) {
             console.error("GraphQL Error:", error);
         }
-    }
+    };
     function cancelCreating() {
         isCreating.value = false;
         newItem.value = { name: '', description: ''};
-    }
+    };
     function startEditing(item) {
         editingItem.value = item.id;
         editedItem.value = { ...item };
@@ -128,7 +134,7 @@
                 <th>Name</th>
                 <th>Description</th>
                 <th>Author</th>
-                <th>Actions</th>
+                <th v-if="isAuthenticated">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -138,8 +144,8 @@
                 <td v-else>{{ item.name }}</td>
                 <td v-if="editingItem === item.id"><input v-model="editedItem.description"/></td>
                 <td v-else>{{ item.description }}</td>
-                <td>XXX</td>
-                <td>
+                <td>{{ item.author.user.username }}</td>
+                <td v-if="isAuthenticated">
                     <button class="edited" v-if="editingItem === item.id" @click="saveEditedItem">A</button>
                     <button class="cancel" v-if="editingItem === item.id" @click="cancelEditing">X</button>
                     <button class="edit" v-else @click="startEditing(item)">E</button>
@@ -150,13 +156,13 @@
                 <td>{{ items.length + 1 }}</td>
                 <td><input v-model="newItem.name" placeholder="*name" autofocus/></td>
                 <td><input v-model="newItem.description" placeholder="*decription"/></td>
-                <td>aaa</td>
-                <td>
+                <td style="color: orange;">{{ currentUser }}</td>
+                <td v-if="isAuthenticated">
                     <button class="create" @click="saveNewItem">A</button>
                     <button class="cancel" @click="cancelCreating">X</button>
                 </td>
             </tr>
-            <tr class="item" v-else>
+            <tr class="item" v-else-if="isAuthenticated">
                 <td>{{ items.length + 1 }}</td>
                 <td></td>
                 <td></td>
@@ -167,6 +173,14 @@
             </tr>
         </tbody>
     </table>
+    <div><label class="required" v-if="!isAuthenticated">  If You want edit table, please login...</label></div>
+    <div v-if="isAuthenticated">
+        <label class="required">A - Accept </label>
+        <label class="required">C - Create </label>
+        <label class="required">D - Delete </label>
+        <label class="required">E - Edit </label>
+        <label class="required">X - Cancel</label>
+    </div>
     <div><label class="required" v-if="isCreating">* - required</label></div>
 </template>
 

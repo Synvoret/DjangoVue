@@ -1,12 +1,12 @@
 <script setup>
     import Login from "../components/Login.vue";
-    import { ref, inject } from 'vue';
+    import { inject } from 'vue';
 
-    const loggedProfile = inject('loggedProfile');
+    const isAuthenticated = inject('isAuthenticated');
 </script>
 
 <template>
-    <h2>{{ loggedProfile ? 'Logout' : 'Login' }}</h2>
+    <h2 v-if="!isAuthenticated">Login</h2>
     <Login />
 </template>
 

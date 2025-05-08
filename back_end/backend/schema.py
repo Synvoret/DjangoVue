@@ -1,5 +1,6 @@
 import graphene
-from django.contrib.auth import authenticate, get_user_model, login
+import graphql_jwt
+from django.contrib.auth import authenticate, get_user_model, login, logout
 from django.contrib.auth.models import User
 from graphene_django import DjangoObjectType
 
@@ -8,7 +9,7 @@ from blog import models
 
 class UserType(DjangoObjectType):
     class Meta:
-        model = User
+        model = get_user_model()
 
 
 class AuthorType(DjangoObjectType):
@@ -30,6 +31,7 @@ class TagType(DjangoObjectType):
 class ItemType(DjangoObjectType):
     class Meta:
         model = models.Item
+        fields = "__all__"
 
 
 class Query(graphene.ObjectType):
@@ -43,6 +45,7 @@ class Query(graphene.ObjectType):
     # PROFILEs
     profiles = graphene.List(AuthorType)
     check_auth = graphene.Field(UserType)
+    users = graphene.List(UserType)
 
     def resolve_all_posts(root, info):
         return (
@@ -74,6 +77,9 @@ class Query(graphene.ObjectType):
             .select_related("author")
             .filter(tags__name__iexact=tag)
         )
+
+    def resolve_users(root, info):
+        return get_user_model().objects.all()
 
     # CRUD
     def resolve_items(self, info, **kwargs):
@@ -108,8 +114,12 @@ class CreateItem(graphene.Mutation):
 
     item = graphene.Field(ItemType)
 
-    def mutate(self, info, name, description):
-        item = models.Item(name=name, description=description)
+    def mutate(self, info, name, description=None):
+        user = info.context.user
+        if not user.is_authenticated:
+            raise Exception("Authentication required to create new item.")
+        profile = models.Profile.objects.get(user=user)
+        item = models.Item(name=name, description=description, author=profile)
         item.save()
         return CreateItem(item=item)
 
@@ -165,7 +175,7 @@ class CreateProfile(graphene.Mutation):
 
     def mutate(self, info, username, password, website=None, bio=None):
         if User.objects.filter(username=username).exists():
-            raise Exception('Username already taken.')
+            raise Exception("Username already taken.")
         user = User.objects.create_user(username=username, password=password)
         profile = models.Profile.objects.create(user=user, website=website, bio=bio)
         return CreateProfile(user=profile)
@@ -192,14 +202,28 @@ class LoginUser(graphene.Mutation):
         return LoginUser(user=user)
 
 
+class LogoutUser(graphene.Mutation):
+    success = graphene.Boolean()
+
+    def mutate(self, info):
+        request = info.context
+        logout(request)
+        return LogoutUser(success=True)
+
+
 class Mutation(graphene.ObjectType):
+    # JWT
+    token_auth = graphql_jwt.ObtainJSONWebToken.Field()
+    verify_token = graphql_jwt.Verify.Field()
+    refresh_token = graphql_jwt.Refresh.Field()
     # CRUD
     create_item = CreateItem.Field()
     update_item = UpdateItem.Field()
     delete_item = DeleteItem.Field()
-    # PROFILEs
+    # PROFILEs (create & login)
     create_profile = CreateProfile.Field()
     login_user = LoginUser.Field()
+    logout_user = LogoutUser.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

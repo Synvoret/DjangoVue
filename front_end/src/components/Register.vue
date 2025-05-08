@@ -33,7 +33,7 @@
                 bio: bio.value,
             });
             success.value = true;
-            const createdProfile = response.data.CreateProfile.profile;
+            const createdProfile = response.data.createProfile.user.user.username;
             console.log(createdProfile)
         } catch (error) {
             console.error("GraphQL Error:", error);
@@ -64,7 +64,7 @@
     </form>
     <div v-if="loading">Loading...</div>
     <div v-else-if="error">{{ error.message }}</div>
-    <div v-else-if="success">Profile created.</div>
+    <div v-else-if="success">Profile "{{ username }}" created.</div>
 </template>
 
 <style scoped>

@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+// BLOG
 import AuthorView from "../views/AuthorView.vue";
 import AllPostsView from "../views/AllPostsView.vue";
 import PostView from "../views/PostView.vue";
@@ -42,17 +43,12 @@ const router = createRouter({
     {
       path: "/register",
       name: "register",
-      component: RegisterView
+      component: RegisterView,
     },
     {
       path: "/login",
       name: "login",
-      component: LoginView
-    },
-    {
-      path: "/logout",
-      name: 'logout',
-      component: LoginView
+      component: LoginView,
     }
   ],
 });

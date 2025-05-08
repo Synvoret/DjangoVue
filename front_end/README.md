@@ -27,3 +27,25 @@ npm run dev
 ```sh
 npm run build
 ```
+
+
+<!-- project structure -->
+src/
+    assets/ (static assets, images, fonts, etc.)
+    components/ (reusable components)
+        common/ (common components for the entire project)
+        layout/ (layout components header, footer ...)
+        specific/ (view-specific components)
+    hooks/ (hooks, useFetch, useAuth)
+    views/ (views, pages)
+        Home.vue (home page)
+        About.vue (about view)
+        ... (others views)
+    router/ (router configuration)
+        index.js (main router cofiguration)
+    styles/ (global styles)
+        main.css (main styles)
+    utils/ (helper functions)
+        helpers.js (helper function)
+    App.vue (main apllication components)
+    main.js (main input file)
