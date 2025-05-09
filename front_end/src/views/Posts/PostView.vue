@@ -1,5 +1,5 @@
 <script setup>
-    import AuthorLink from "../components/AuthorLink.vue";
+    import AuthorLink from "@/components/AuthorLink.vue";
     import { useRoute } from "vue-router";
     import { useQuery } from "@vue/apollo-composable";
     import gql from "graphql-tag";

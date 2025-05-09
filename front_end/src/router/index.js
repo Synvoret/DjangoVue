@@ -1,14 +1,14 @@
 import { createRouter, createWebHistory } from "vue-router";
 // BLOG
-import AuthorView from "../views/AuthorView.vue";
-import AllPostsView from "../views/AllPostsView.vue";
-import PostView from "../views/PostView.vue";
-import PostsByTagView from "../views/PostsByTagView.vue";
+import AuthorPostsView from "@/views/Posts/AuthorPostsView.vue";
+import AllPostsView from "@/views/Posts/AllPostsView.vue";
+import PostView from "@/views/Posts/PostView.vue";
+import PostsByTagView from "@/views/Posts/PostsByTagView.vue";
 // CRUD
-import ItemList from "../views/ItemList.vue";
+import ItemListView from "@/views/Items/ItemListView.vue";
 // PROFILEs
-import RegisterView from "../views/RegisterView.vue";
-import LoginView from "../views/LoginView.vue";
+import RegisterView from "@/views/Users/RegisterView.vue";
+import LoginView from "@/views/Users/LoginView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,7 +21,13 @@ const router = createRouter({
     {
       path: "/author/:username",
       name: "author",
-      component: AuthorView,
+      component: AuthorPostsView,
+    },
+    // CRUD (posts)
+    {
+      path: "/author/:username/newPost",
+      name: "newPost",
+      component: () => import('@/views/Posts/NewPostView.vue'),
     },
     {
       path: "/post/:slug",
@@ -37,7 +43,7 @@ const router = createRouter({
     {
       path: "/items",
       name: "items",
-      component: ItemList,
+      component: ItemListView,
     },
     // PROFILEs
     {

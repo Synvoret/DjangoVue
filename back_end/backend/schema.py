@@ -2,6 +2,7 @@ import graphene
 import graphql_jwt
 from django.contrib.auth import authenticate, get_user_model, login, logout
 from django.contrib.auth.models import User
+from django.utils import timezone
 from graphene_django import DjangoObjectType
 
 from blog import models
@@ -99,11 +100,50 @@ class Query(graphene.ObjectType):
         print(f"👤 USER: {request.user}, Authenticated: {is_authenticated}")
 
         if user.is_authenticated:
-            print(user)
             return user
 
-        print(user)
         return None
+
+
+# CRUD (posts)
+class CreatePost(graphene.Mutation):
+    class Arguments:
+        title = graphene.String(required=True)
+        subtitle = graphene.String()
+        slug = graphene.String(required=True)
+        body = graphene.String(required=True)
+        meta_description = graphene.String()
+        publish_date = graphene.DateTime()
+        tags = graphene.List(graphene.String)
+    
+    post = graphene.Field(PostType)
+
+    def mutate(self, info, title, slug, body, subtitle="", meta_description="", publish_date=None, tags=None):
+        user = info.context.user
+        if not user.is_authenticated:
+            raise Exception("Authentication required to create new post.")
+        
+        profile = models.Profile.objects.get(user=user)
+        if not publish_date:
+            publish_date = timezone.now()
+        post = models.Post(
+            title=title,
+            subtitle=subtitle,
+            slug=slug,
+            body=body,
+            meta_description=meta_description,
+            publish_date=publish_date,
+            author=profile
+        )
+        post.save()
+
+        if tags:
+            for tag in tags:
+                tag_instance, created = models.Tag.objects.get_or_create(name=tag)
+                post.tags.add(tag_instance)
+        
+        post.save()
+        return CreatePost(post=post)
 
 
 # CRUD
@@ -216,6 +256,8 @@ class Mutation(graphene.ObjectType):
     token_auth = graphql_jwt.ObtainJSONWebToken.Field()
     verify_token = graphql_jwt.Verify.Field()
     refresh_token = graphql_jwt.Refresh.Field()
+    # CRUD (posts)
+    create_post = CreatePost.Field()
     # CRUD
     create_item = CreateItem.Field()
     update_item = UpdateItem.Field()

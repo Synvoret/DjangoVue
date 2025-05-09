@@ -1,5 +1,5 @@
 <script setup>
-    import PostList from "../components/PostList.vue";
+    import PostList from "@/components/PostList.vue";
     import { useQuery } from "@vue/apollo-composable";
     import gql from "graphql-tag";
 
@@ -18,7 +18,6 @@
             }
         }
     `);
-    // console.error(error.value)
 </script>
 
 <template>

@@ -1,5 +1,5 @@
 <script setup>
-    import ItemList from "../components/ItemList.vue";
+    import ItemList from "@/components/ItemList.vue";
     import { useQuery } from "@vue/apollo-composable";
     import gql from "graphql-tag";
 

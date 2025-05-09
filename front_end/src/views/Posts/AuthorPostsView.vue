@@ -1,10 +1,14 @@
 <script setup>
-    import PostList from "../components/PostList.vue";
+    import { inject, computed } from 'vue';
+    import PostList from "@/components/PostList.vue";
     import { useRoute } from "vue-router";
-    import { useQuery } from "@vue/apollo-composable";
+    import { useQuery, useMutation } from "@vue/apollo-composable";
     import gql from "graphql-tag";
+    import router from '../../router';
 
     const route = useRoute();
+    const currentUser = inject('currentUser');
+    const isAuthenticated = inject('isAuthenticated');
     const username = route.params.username;
     const { result, loading, error } = useQuery(gql`
         query {
@@ -24,15 +28,23 @@
                 }
             }
         }
-    `)
+    `);
+    const addNewPost = () => {
+        router.push({ name: "newPost" });
+    };
+    const isOwnProfile = computed(() => {
+        return isAuthenticated && currentUser.value === username;
+    })
 </script>
 
 <template>
     <div v-if="loading">Loading...</div>
     <div v-else-if="error">{{ error.message }}</div>
     <section v-else :set="author = result.authorByUsername">
-        <p>Author:</p>
-        <h2>{{ author.user.username }}</h2>
+        <span>
+            <p>Author: </p>
+            <h2>{{ author.user.username }}</h2>
+        </span>
         <template v-if="author.user.firstName && author.user.lastName">
             <h3>{{ author.user.firstName }} {{ author.user.lastName }}</h3>
         </template>
@@ -46,14 +58,19 @@
         <h3>Posts</h3>
         <PostList v-if="author.postSet" :posts="author.postSet" :showAuthor="false" />
         <p v-else>The author hasn't posted yet.</p>
+        <div v-if="isOwnProfile">
+            <button class="create" @click="addNewPost">Add new post</button>
+        </div>
     </section>
 </template>
 
 <style scoped>
     h2 {
         color: red;
+        display: inline;
+        font-style: italic;
     }
     p {
-        font-style: italic;
+        display: inline;
     }
 </style>

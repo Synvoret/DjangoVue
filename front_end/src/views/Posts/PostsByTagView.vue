@@ -1,5 +1,5 @@
 <script setup>
-    import PostList from "../components/PostList.vue";
+    import PostList from "@/components/PostList.vue";
     import { useRoute } from "vue-router";
     import { useQuery } from "@vue/apollo-composable";
     import gql from "graphql-tag";
