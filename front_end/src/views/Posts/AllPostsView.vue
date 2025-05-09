@@ -1,7 +1,11 @@
 <script setup>
+    import { inject, computed } from "vue";
     import PostList from "@/components/PostList.vue";
     import { useQuery } from "@vue/apollo-composable";
     import gql from "graphql-tag";
+    import router from '@/router';
+
+    const currentUser = inject('currentUser');
 
     const { result, loading, error } = useQuery(gql`
         query {
@@ -18,6 +22,15 @@
             }
         }
     `);
+    const usersWithPosts = computed(() => {
+        if (!result.value || !result.value.allPosts) return [];
+        const names = result.value.allPosts.map(post => post.author?.user?.username).filter(Boolean);
+        return [...new Set(names)];
+    });
+
+    const addNewPost = () => {
+        router.push({ name: "newPost", params: { username: currentUser } });
+    };
 </script>
 
 <template>
@@ -25,6 +38,10 @@
     <div v-if="loading">Loading...</div>
     <div v-else-if="error" class="warn">{{ error.message }}</div>
     <PostList v-else :posts="result.allPosts" />
+    <div v-if="currentUser && !usersWithPosts.includes(currentUser)">
+        <span>{{ currentUser }}</span>
+        <button @click="addNewPost">Add first Post?</button>
+    </div>
 </template>
 
 <style scoped>

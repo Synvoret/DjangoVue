@@ -2,7 +2,7 @@
     import { inject, computed } from 'vue';
     import PostList from "@/components/PostList.vue";
     import { useRoute } from "vue-router";
-    import { useQuery, useMutation } from "@vue/apollo-composable";
+    import { useQuery } from "@vue/apollo-composable";
     import gql from "graphql-tag";
     import router from '../../router';
 
