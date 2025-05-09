@@ -115,14 +115,24 @@ class CreatePost(graphene.Mutation):
         meta_description = graphene.String()
         publish_date = graphene.DateTime()
         tags = graphene.List(graphene.String)
-    
+
     post = graphene.Field(PostType)
 
-    def mutate(self, info, title, slug, body, subtitle="", meta_description="", publish_date=None, tags=None):
+    def mutate(
+        self,
+        info,
+        title,
+        slug,
+        body,
+        subtitle="",
+        meta_description="",
+        publish_date=None,
+        tags=None,
+    ):
         user = info.context.user
         if not user.is_authenticated:
             raise Exception("Authentication required to create new post.")
-        
+
         profile = models.Profile.objects.get(user=user)
         if not publish_date:
             publish_date = timezone.now()
@@ -133,7 +143,7 @@ class CreatePost(graphene.Mutation):
             body=body,
             meta_description=meta_description,
             publish_date=publish_date,
-            author=profile
+            author=profile,
         )
         post.save()
 
@@ -141,7 +151,7 @@ class CreatePost(graphene.Mutation):
             for tag in tags:
                 tag_instance, created = models.Tag.objects.get_or_create(name=tag)
                 post.tags.add(tag_instance)
-        
+
         post.save()
         return CreatePost(post=post)
 
