@@ -4,6 +4,7 @@
     import { useQuery } from "@vue/apollo-composable";
     import gql from "graphql-tag";
     import router from '@/router';
+    import CrudButton from "@/components/common/CrudButton.vue";
 
     const currentUser = inject('currentUser');
 
@@ -39,8 +40,8 @@
     <div v-else-if="error" class="warn">{{ error.message }}</div>
     <PostList v-else :posts="result.allPosts" />
     <div v-if="currentUser && !usersWithPosts.includes(currentUser)">
-        <span>{{ currentUser }}</span>
-        <button @click="addNewPost">Add first Post?</button>
+        <span>{{ currentUser }} -> </span>
+        <CrudButton label="Add first Post?" buttonClass="create" :action="addNewPost"/>
     </div>
 </template>
 

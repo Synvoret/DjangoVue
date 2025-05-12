@@ -4,7 +4,8 @@
     import { useRoute } from "vue-router";
     import { useQuery } from "@vue/apollo-composable";
     import gql from "graphql-tag";
-    import router from '../../router';
+    import router from '@/router';
+    import CrudButton from "@/components/common/CrudButton.vue";
 
     const route = useRoute();
     const currentUser = inject('currentUser');
@@ -59,7 +60,7 @@
         <PostList v-if="author.postSet" :posts="author.postSet" :showAuthor="false" />
         <p v-else>The author hasn't posted yet.</p>
         <div v-if="isOwnProfile">
-            <button class="create" @click="addNewPost">Add new post</button>
+            <CrudButton label="Add new Post" buttonClass="create" :action="addNewPost"/>
         </div>
     </section>
 </template>

@@ -2,6 +2,7 @@
     import { ref, inject } from 'vue';
     import { useMutation } from "@vue/apollo-composable";
     import gql from "graphql-tag";
+    import CrudButton from './common/CrudButton.vue';
 
     const props = defineProps({
         items: {
@@ -146,10 +147,10 @@
                 <td v-else>{{ item.description }}</td>
                 <td>{{ item.author.user.username }}</td>
                 <td v-if="isAuthenticated">
-                    <button class="edited" v-if="editingItem === item.id" @click="saveEditedItem">A</button>
-                    <button class="cancel" v-if="editingItem === item.id" @click="cancelEditing">X</button>
-                    <button class="edit" v-else @click="startEditing(item)">E</button>
-                    <button class="delete" @click="removeItem(item.id)">D</button>
+                    <CrudButton v-if="editingItem === item.id" label="A" buttonClass="edited" @click="saveEditedItem"/>
+                    <CrudButton v-if="editingItem === item.id" label="X" buttonClass="cancel" @click="cancelEditing"/>
+                    <CrudButton v-else label="E" buttonClass="edit" @click="startEditing(item)"/>
+                    <CrudButton label="D" buttonClass="delete" @click="removeItem(item.id)"/>
                 </td>
             </tr>
             <tr class="item" v-if="isCreating">
@@ -158,8 +159,8 @@
                 <td><input v-model="newItem.description" placeholder="*decription"/></td>
                 <td style="color: orange;">{{ currentUser }}</td>
                 <td v-if="isAuthenticated">
-                    <button class="create" @click="saveNewItem">A</button>
-                    <button class="cancel" @click="cancelCreating">X</button>
+                    <CrudButton label="A" buttonClass="create" @click="saveNewItem"/>
+                    <CrudButton label="X" buttonClass="cancel" @click="cancelCreating"/>
                 </td>
             </tr>
             <tr class="item" v-else-if="isAuthenticated">
@@ -168,7 +169,7 @@
                 <td></td>
                 <td></td>
                 <td>
-                    <button class="create" @click="creatingItem">C</button>
+                    <CrudButton label="C" buttonClass="create" @click="creatingItem"/>
                 </td>
             </tr>
         </tbody>
@@ -191,28 +192,7 @@
         border-collapse: collapse;
         text-align: center;
     }
-
-    button.edit:hover {
-        color: blue;
-    }
-    button.edited:hover {
-        color: cyan;
-    }
-    button.cancel:hover {
-        color: orange;
-    }
-    button.delete:hover {
-        color: red;
-    }
-    button.create:hover {
-        color: green;
-    }
-    button:hover {
-        font-weight: bold;
-        font-style: italic;
-        text-decoration: underline;
-    }
-
+    
     input {
         width: 80px;
         box-sizing: border-box;

@@ -2,6 +2,7 @@
     import { ref } from 'vue';
     import { useMutation } from "@vue/apollo-composable";
     import gql from "graphql-tag";
+    import CrudButton from "@/components/common/CrudButton.vue";
 
     const title = ref('');
     const slug = ref('');
@@ -50,7 +51,7 @@
             <textarea v-model="body" rows="10" placeholder="body"></textarea>
         </div>
         <div><label class="required">* - required</label></div>
-        <button type="submit">Save Post</button>
+        <CrudButton label="Save Post" buttonClass="create" type="submit"/>
     </form>
     <div v-if="loading">Loading...</div>
     <div v-else-if="error">{{ error.message }}</div>

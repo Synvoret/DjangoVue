@@ -2,6 +2,7 @@
     import { ref } from 'vue';
     import { useMutation } from "@vue/apollo-composable";
     import gql from "graphql-tag";
+    import CrudButton from "@/components/common/CrudButton.vue";
 
     const username = ref('');
     const password = ref('');
@@ -60,7 +61,7 @@
             <input type="text" v-model="bio" placeholder="bio"/>
         </div>
         <div><label class="required">* - required</label></div>
-        <button type="submit">Register</button>
+        <CrudButton type="submit" label="Register" buttonClass="register"/>
     </form>
     <div v-if="loading">Loading...</div>
     <div v-else-if="error">{{ error.message }}</div>

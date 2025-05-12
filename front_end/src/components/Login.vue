@@ -1,6 +1,7 @@
 <script setup>
     import { useAuth } from '@/hooks/useAuth';
     import { useHandleAuth } from '@/hooks/useHandleAuth';
+    import CrudButton from "@/components/common/CrudButton.vue";
 
     const { isAuthenticated, currentUser } = useAuth();
     const {
@@ -24,7 +25,7 @@
             <input type="password" v-model="password" placeholder="password" required />
         </div>
 
-        <button type="submit">Login</button>
+        <CrudButton label="Login" buttonClass="login" @click="login"/>
     </form>
 
     <div v-if="loading">Loading...</div>
