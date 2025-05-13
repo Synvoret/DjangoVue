@@ -71,10 +71,3 @@
     <div v-else-if="error">{{ error.message }}</div>
     <div v-else-if="success">Profile "{{ username }}" created.</div>
 </template>
-
-<style scoped>
-    label.required {
-        font-size: 12px;
-        font-style: italic;
-    }
-</style>

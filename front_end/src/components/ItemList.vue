@@ -188,10 +188,3 @@
         <label class="required" v-if="isCreating">* - required</label>
     </div>
 </template>
-
-<style scoped>
-    label.required {
-        font-size: 12px;
-        font-style: italic;
-    }
-</style>

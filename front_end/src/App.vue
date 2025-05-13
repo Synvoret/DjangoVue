@@ -1,10 +1,11 @@
 <script setup>
   import { ref, provide, watch } from 'vue';
   import { RouterView } from "vue-router";
-  import Header from './components/Header.vue';
   import { provideApolloClient, useQuery } from '@vue/apollo-composable';
   import apolloClient from '@/apollo';
   import gql from 'graphql-tag';
+  import Header from './components/Header.vue';
+  import Fotter from './components/Footer.vue';
 
   const currentUser = ref(null);
   const isAuthenticated = ref(false);
@@ -35,5 +36,8 @@
 
 <template>
   <Header />
-  <RouterView />
+  <main class="content">
+    <RouterView />
+  </main>
+  <Fotter />
 </template>

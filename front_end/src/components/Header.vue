@@ -19,7 +19,6 @@
     }
     header {
         border-bottom: 1px solid #ccc;
-        margin-bottom: 1rem;
     }
     .wrapper {
         padding: 1rem;

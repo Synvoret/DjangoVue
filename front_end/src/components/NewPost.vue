@@ -61,10 +61,3 @@
     <div v-else-if="error">{{ error.message }}</div>
     <div v-else-if="success">Post "{{ title }}" created.</div>
 </template>
-
-<style scoped>
-    label.required {
-        font-size: 12px;
-        font-style: italic;
-    }
-</style>

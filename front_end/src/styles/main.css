@@ -16,6 +16,11 @@ a,
   padding: 3px;
 }
 
+label.required {
+  font-size: 12px;
+  font-style: italic;
+}
+
 input:focus,
 textarea:focus {
   outline: none;
@@ -78,6 +83,13 @@ td:nth-child(3) {
   width: 35%;
 }
 
+td:nth-child(4) {
+  width: 10%;
+}
+
+td:last-child {
+  width: 15%;
+}
 
 
 /* @media (hover: hover) {
