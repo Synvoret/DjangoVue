@@ -16,16 +16,17 @@
 
 <template>
     <form @submit.prevent="login" v-if="!isAuthenticated">
-        <div>
+        <div class="form-group">
             <label for="username">Username: </label>
             <input type="text" v-model="username" placeholder="username" required />
         </div>
-        <div>
+        <div class="form-group">
             <label for="password">Password: </label>
             <input type="password" v-model="password" placeholder="password" required />
         </div>
-
-        <CrudButton label="Login" buttonClass="login" @click="login"/>
+        <div class="button-container">
+            <CrudButton label="Login" buttonClass="login" @click="login"/>
+        </div>
     </form>
 
     <div v-if="loading">Loading...</div>

@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 
 os.environ.setdefault(
     "DJANGO_SETTINGS_MODULE", "backend.settings"
-)  # <-- zmień, jeśli masz inną nazwę
+)
 
 django.setup()
 

@@ -146,7 +146,7 @@
                 <td v-if="editingItem === item.id"><input v-model="editedItem.description"/></td>
                 <td v-else>{{ item.description }}</td>
                 <td>{{ item.author.user.username }}</td>
-                <td v-if="isAuthenticated">
+                <td v-if="isAuthenticated" class="button-container">
                     <CrudButton v-if="editingItem === item.id" label="A" buttonClass="edited" @click="saveEditedItem"/>
                     <CrudButton v-if="editingItem === item.id" label="X" buttonClass="cancel" @click="cancelEditing"/>
                     <CrudButton v-else label="E" buttonClass="edit" @click="startEditing(item)"/>
@@ -156,9 +156,9 @@
             <tr class="item" v-if="isCreating">
                 <td>{{ items.length + 1 }}</td>
                 <td><input v-model="newItem.name" placeholder="*name" autofocus/></td>
-                <td><input v-model="newItem.description" placeholder="*decription"/></td>
+                <td><input v-model="newItem.description" placeholder="*description"/></td>
                 <td style="color: orange;">{{ currentUser }}</td>
-                <td v-if="isAuthenticated">
+                <td v-if="isAuthenticated" class="button-container">
                     <CrudButton label="A" buttonClass="create" @click="saveNewItem"/>
                     <CrudButton label="X" buttonClass="cancel" @click="cancelCreating"/>
                 </td>
@@ -168,13 +168,15 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td>
+                <td class="button-container">
                     <CrudButton label="C" buttonClass="create" @click="creatingItem"/>
                 </td>
             </tr>
         </tbody>
     </table>
-    <div><label class="required" v-if="!isAuthenticated">  If You want edit table, please login...</label></div>
+    <div>
+        <label class="required" v-if="!isAuthenticated">  If You want edit table, please login...</label>
+    </div>
     <div v-if="isAuthenticated">
         <label class="required">A - Accept </label>
         <label class="required">C - Create </label>
@@ -182,26 +184,14 @@
         <label class="required">E - Edit </label>
         <label class="required">X - Cancel</label>
     </div>
-    <div><label class="required" v-if="isCreating">* - required</label></div>
+    <div>
+        <label class="required" v-if="isCreating">* - required</label>
+    </div>
 </template>
 
 <style scoped>
-
-    table, th, td {
-        border: 1px dotted black;
-        border-collapse: collapse;
-        text-align: center;
-    }
-    
-    input {
-        width: 80px;
-        box-sizing: border-box;
-        cursor: text;
-    }
-
     label.required {
         font-size: 12px;
         font-style: italic;
     }
-
 </style>

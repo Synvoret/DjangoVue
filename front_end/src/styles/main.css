@@ -1,7 +1,8 @@
 @import './base.css';
 
 #app {
-  max-width: 400px;
+  width: 80%;
+  max-width: 600px;
   margin: 0 auto;
   padding: 2rem;
   font-weight: normal;
@@ -14,6 +15,70 @@ a,
   transition: 0.4s;
   padding: 3px;
 }
+
+input:focus,
+textarea:focus {
+  outline: none;
+  border: 1px solid red;
+}
+
+div.button-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap;
+}
+
+/* FORMs CSS */
+.form-group {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.form-group label {
+  flex: 1;
+}
+
+.form-group input,
+.form-group textarea {
+  flex: 2;
+}
+
+.form-group textarea {
+  resize: vertical;
+  height: 100px
+}
+
+/* TABLEs */
+table.item-list {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+table, th, td {
+  border: 1px dotted black;
+}
+
+table thead {
+  font-style: italic;
+}
+
+table.item-list input {
+  width: 100%;
+  cursor: text;
+}
+
+td:first-child {
+  white-space: nowrap;
+}
+
+td:nth-child(2),
+td:nth-child(3) {
+  width: 35%;
+}
+
+
 
 /* @media (hover: hover) {
   a:hover {

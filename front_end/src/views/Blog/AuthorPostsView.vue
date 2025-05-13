@@ -44,7 +44,7 @@
     <section v-else :set="author = result.authorByUsername">
         <span>
             <p>Author: </p>
-            <h2>{{ author.user.username }}</h2>
+            <h2>{{ author.user.username }} </h2>
         </span>
         <template v-if="author.user.firstName && author.user.lastName">
             <h3>{{ author.user.firstName }} {{ author.user.lastName }}</h3>
@@ -52,14 +52,14 @@
         <p v-if="author.bio">
             {{ author.bio }}
             <template v-if="author.website">
-                Learn more about {{ author.user.username }} on their
-                <a :href="author.website">website</a>.
+                <p>Learn more about {{ author.user.username }} on their
+                    <a :href="author.website">website</a>. </p>
             </template>
         </p>
         <h3>Posts</h3>
         <PostList v-if="author.postSet" :posts="author.postSet" :showAuthor="false" />
         <p v-else>The author hasn't posted yet.</p>
-        <div v-if="isOwnProfile">
+        <div v-if="isOwnProfile" class="button-container">
             <CrudButton label="Add new Post" buttonClass="create" :action="addNewPost"/>
         </div>
     </section>

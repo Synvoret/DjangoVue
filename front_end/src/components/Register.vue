@@ -44,24 +44,28 @@
 
 <template>
     <form @submit.prevent="registerProfile">
-        <div>
+        <div class="form-group">
             <label for="username">*Username: </label>
             <input type="text" v-model="username" placeholder="username" required/>
         </div>
-        <div>
+        <div class="form-group">
             <label for="password">*Password: </label>
             <input type="password" v-model="password" placeholder="password" required/>
         </div>
-        <div>
+        <div class="form-group">
             <label for="website">Website: </label>
             <input type="text" v-model="website" placeholder="website"/>
         </div>
-        <div>
+        <div class="form-group">
             <label for="bio">Bio: </label>
             <input type="text" v-model="bio" placeholder="bio"/>
         </div>
-        <div><label class="required">* - required</label></div>
-        <CrudButton type="submit" label="Register" buttonClass="register"/>
+        <div class="form-group">
+            <label class="required">* - required</label>
+        </div>
+        <div class="button-container">
+            <CrudButton type="submit" label="Register" buttonClass="register"/>
+        </div>
     </form>
     <div v-if="loading">Loading...</div>
     <div v-else-if="error">{{ error.message }}</div>

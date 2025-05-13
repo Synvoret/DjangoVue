@@ -38,20 +38,24 @@
 
 <template>
     <form @submit.prevent="addNewPost">
-        <div>
+        <div class="form-group">
             <label for="title">*Title: </label>
             <input type="text" v-model="title" placeholder="title" required/>
         </div>
-        <div>
+        <div class="form-group">
             <label for="slug">*Slug: </label>
             <input type="text" v-model="slug" placeholder="slug" required/>
         </div>
-        <div>
+        <div class="form-group">
             <label for="body">*Text: </label>
-            <textarea v-model="body" rows="10" placeholder="body"></textarea>
+            <textarea v-model="body" placeholder="body"></textarea>
         </div>
-        <div><label class="required">* - required</label></div>
-        <CrudButton label="Save Post" buttonClass="create" type="submit"/>
+        <div class="form-group">
+            <label class="required">* - required</label>
+        </div>
+        <div class="button-container">
+            <CrudButton label="Save Post" buttonClass="create" type="submit"/>
+        </div>
     </form>
     <div v-if="loading">Loading...</div>
     <div v-else-if="error">{{ error.message }}</div>
