@@ -61,6 +61,7 @@
         `);
     function creatingItem() {
         isCreating.value = true;
+        editingItem.value = null;
     };
     async function saveNewItem() {
         if (!newItem.value.name || !newItem.value.description ) return;
@@ -87,6 +88,7 @@
     function startEditing(item) {
         editingItem.value = item.id;
         editedItem.value = { ...item };
+        isCreating.value = false;
     }
     async function saveEditedItem() {
         if (!editedItem.value.name || !editedItem.value.description) return;
