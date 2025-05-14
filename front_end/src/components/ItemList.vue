@@ -1,5 +1,5 @@
 <script setup>
-    import { ref, inject } from 'vue';
+    import { ref, inject, computed, watch } from 'vue';
     import { useMutation } from "@vue/apollo-composable";
     import gql from "graphql-tag";
     import CrudButton from './common/CrudButton.vue';
@@ -15,6 +15,9 @@
     });
 
     const localItems = ref([...props.items]);
+    watch(() => props.items, (newItems) => {
+        localItems.value = [...newItems];
+    });
     const isCreating = ref(false);
     const newItem = ref({ name: '', description: '' });
     const editingItem = ref(null);
@@ -47,6 +50,11 @@
                         id
                         name
                         description
+                        author {
+                            user {
+                                username
+                            }
+                        }
                     }
                 }
             }
@@ -70,13 +78,16 @@
                 name: newItem.value.name,
                 description: newItem.value.description,
             });
-            if (props.refetch) {
-                await props.refetch();
-            };
             const createdItem = response.data.createItem.item;
             localItems.value.push(createdItem);
             newItem.value = { name: '', description: ''};
             isCreating.value = false;
+            // set last page pagination after save item
+            if (itemsPerPage.value === 'all') {
+                currentPage.value = Math.ceil(localItems.value.length / itemsPerPage.value);
+            } else {
+                currentPage.value = Math.ceil(localItems.value.length / itemsPerPage.value);
+            }
         } catch (error) {
             console.error("GraphQL Error:", error);
         }
@@ -98,11 +109,8 @@
                 name: editedItem.value.name,
                 description: editedItem.value.description,
             });
-            if (props.refetch) {
-                await props.refetch();
-            };
             const updatedItem = response.data.updateItem.item;
-            const index = localItems.value.findIndex(item => item.id === updateItem.id);
+            const index = localItems.value.findIndex(item => item.id === editingItem.value);
             localItems.value[index] = updatedItem;
             editingItem.value = null;
             editedItem.value = { name: '', description: ''};
@@ -118,13 +126,44 @@
         try {
             const response = await deleteItem({ id: itemId });
             if (response.data.deleteItem.success && props.refetch) {
-                await props.refetch();
+                // await props.refetch();
                 localItems.value = localItems.value.filter(item => item.id !== itemId);
+                if ((currentPage.value - 1) * itemsPerPage.value >= localItems.value.length && currentPage.value > 1) {
+                    currentPage.value -= 1;
+                }
             } else {
                 console.error("GraphQL Error:");
             }
         } catch (error) {
             console.error("GraphQL Error:", error);
+        }
+    }
+
+    // PAGINATION
+    const currentPage = ref(1);
+    const itemsPerPage = ref(5);
+    const paginatedItems = computed(() => {
+        if (itemsPerPage.value === 'all') {
+            return localItems.value;
+        };
+        const start = (currentPage.value - 1) * itemsPerPage.value;
+        const end = start + itemsPerPage.value;
+        return localItems.value.slice(start, end);
+    });
+    const totalPages = computed(() => {
+        return Math.ceil(localItems.value.length / itemsPerPage.value);
+    })
+
+    function goToPage(page) {
+        if (page >= 1 && page <= totalPages.value) {
+            currentPage.value = page;
+        }
+    }
+    function displayPosition(index) {
+        if (typeof itemsPerPage.value === 'number') {
+            return (currentPage.value - 1) * itemsPerPage.value + index + 1;
+        } else {
+            return index + 1;
         }
     }
 </script>
@@ -141,8 +180,8 @@
             </tr>
         </thead>
         <tbody>
-            <tr class="item" v-for="(item, index) in items" :key="item.id">
-                <td>{{ index + 1 }}</td>
+            <tr class="item" v-for="(item, index) in paginatedItems" :key="item.id">
+                <td>{{ displayPosition(index) }}</td>
                 <td v-if="editingItem === item.id"><input v-model="editedItem.name"/></td>
                 <td v-else>{{ item.name }}</td>
                 <td v-if="editingItem === item.id"><input v-model="editedItem.description"/></td>
@@ -156,7 +195,7 @@
                 </td>
             </tr>
             <tr class="item" v-if="isCreating">
-                <td>{{ items.length + 1 }}</td>
+                <td>{{ localItems.length + 1  }}</td>
                 <td><input v-model="newItem.name" placeholder="*name" autofocus/></td>
                 <td><input v-model="newItem.description" placeholder="*description"/></td>
                 <td style="color: orange;">{{ currentUser }}</td>
@@ -165,8 +204,9 @@
                     <CrudButton label="X" buttonClass="cancel" @click="cancelCreating"/>
                 </td>
             </tr>
+
             <tr class="item" v-else-if="isAuthenticated">
-                <td>{{ items.length + 1 }}</td>
+                <td>{{ localItems.length + 1 }}</td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -174,6 +214,7 @@
                     <CrudButton label="C" buttonClass="create" @click="creatingItem"/>
                 </td>
             </tr>
+
         </tbody>
     </table>
     <div>
@@ -189,4 +230,19 @@
     <div>
         <label class="required" v-if="isCreating">* - required</label>
     </div>
+
+    <div class="pagination" v-if="totalPages > 1">
+        <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1">Previous</button>
+        <span>Page {{ currentPage }} of {{ totalPages }}</span>
+        <button @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages">Next</button>
+    </div>
+
+    <div class="items-per-page">
+        <label for="itemsPerPage">Items per page</label>
+        <select id="itemsPerPage" v-model="itemsPerPage">
+            <option v-for="n in [5, 10, 15, 20]" :key="n" :value="n">{{ n }}</option>
+            <option value="all">All</option>
+        </select>
+    </div>
+
 </template>
