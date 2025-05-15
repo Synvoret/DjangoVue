@@ -12,4 +12,4 @@ if not User.objects.filter(username="admin").exists():
 EOF
 
 echo "👉 Server start"
-exec python manage.py runserver 127.0.0.1:8000
+exec python manage.py runserver 0.0.0.0:8000
