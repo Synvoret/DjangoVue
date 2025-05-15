@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  back_end:
+    build:
+      context: ./back_end
+    volumes:
+      - ./back_end:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+    command: ["/entrypoint.sh"]
+  
+  front_end:
+    build:
+      context: ./front_end
+    volumes:
+      - ./front_end:/vue
+    ports:
+      - "5173:5173"
+    command: ["npm", "run", "dev", "--", "--host"]
