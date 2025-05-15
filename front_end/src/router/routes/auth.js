@@ -1,6 +1,7 @@
 // PROFILEs
 import RegisterView from "@/views/Users/RegisterView.vue";
 import LoginView from "@/views/Users/LoginView.vue";
+import UsersView from "@/views/Users/UsersView.vue";
 
 export default [
     {
@@ -12,5 +13,10 @@ export default [
         path: "/login",
         name: "login",
         component: LoginView,
+    },
+    {
+        path: "/users",
+        name: "users",
+        component: UsersView,
     }
 ]
