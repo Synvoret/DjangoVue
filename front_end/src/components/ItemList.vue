@@ -231,14 +231,14 @@
         <label class="required" v-if="isCreating">* - required</label>
     </div>
 
-    <div class="pagination" v-if="totalPages > 1">
-        <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1">Previous</button>
+    <div class="button-container" v-if="totalPages > 1">
+        <CrudButton label="Previous" buttonClass="first" @click="goToPage(currentPage - 1)" :disabled="currentPage === 1"/>
         <span>Page {{ currentPage }} of {{ totalPages }}</span>
-        <button @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages">Next</button>
+        <CrudButton label="Next" buttonClass="last" @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages"/>
     </div>
 
-    <div class="items-per-page">
-        <label for="itemsPerPage">Items per page</label>
+    <div class="button-container">
+        <label for="itemsPerPage">Items per page </label>
         <select id="itemsPerPage" v-model="itemsPerPage">
             <option v-for="n in [5, 10, 15, 20]" :key="n" :value="n">{{ n }}</option>
             <option value="all">All</option>
