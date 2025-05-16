@@ -168,6 +168,7 @@
     }
 </script>
 
+
 <template>
     <table class="item-list">
         <thead>
