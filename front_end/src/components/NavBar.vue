@@ -12,6 +12,7 @@
     <nav>
         <RouterLink to="/">Posts</RouterLink>
         <RouterLink to="/items">Items</RouterLink>
+        <RouterLink to="/users">Users</RouterLink>
         <RouterLink v-if="!isAuthenticated" to="/login">Login</RouterLink>
         <a v-else href="#" @click.prevent="logout">
             Logout

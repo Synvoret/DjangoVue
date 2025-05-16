@@ -42,9 +42,15 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # graphql
     "graphene_django",
+    # rest_framework
+    "rest_framework",
+    "rest_framework.authtoken",
     "corsheaders",
+    # local apps
     "blog.apps.BlogConfig",
+    "rest_api.apps.RestApiConfig",
 ]
 
 MIDDLEWARE = [
