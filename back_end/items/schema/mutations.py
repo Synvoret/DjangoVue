@@ -1,7 +1,7 @@
 import graphene
 
-from blog.models import Profile
 from items.models import Item
+from profiles.models import Profile
 
 from .types import ItemType
 

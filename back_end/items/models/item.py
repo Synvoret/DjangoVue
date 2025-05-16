@@ -1,6 +1,6 @@
 from django.db import models
 
-from blog.models import Profile
+from profiles.models import Profile
 
 
 # CRUD

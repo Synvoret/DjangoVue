@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     # local apps
     "blog.apps.BlogConfig",
     "items.apps.ItemsConfig",
+    "profiles.apps.ProfilesConfig",
     "rest_api.apps.RestApiConfig",
 ]
 

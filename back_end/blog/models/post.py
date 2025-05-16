@@ -1,6 +1,7 @@
 from django.db import models
 
-from .profile import Profile
+from profiles.models import Profile
+
 from .tag import Tag
 
 
