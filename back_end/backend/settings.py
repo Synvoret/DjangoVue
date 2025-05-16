@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "corsheaders",
     # local apps
     "blog.apps.BlogConfig",
+    "items.apps.ItemsConfig",
     "rest_api.apps.RestApiConfig",
 ]
 

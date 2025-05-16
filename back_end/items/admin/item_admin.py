@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from blog.models import Item
+from items.models import Item
 
 
 # CRUD

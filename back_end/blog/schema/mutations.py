@@ -5,7 +5,8 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 
 from blog import models
-from .types import PostType, AuthorType, UserType, ItemType
+
+from .types import AuthorType, PostType, UserType
 
 
 # CRUD (posts)
@@ -57,63 +58,6 @@ class CreatePost(graphene.Mutation):
 
         post.save()
         return CreatePost(post=post)
-
-
-# CRUD
-class CreateItem(graphene.Mutation):
-    class Arguments:
-        name = graphene.String(required=True)
-        description = graphene.String()
-
-    item = graphene.Field(ItemType)
-
-    def mutate(self, info, name, description=None):
-        user = info.context.user
-        if not user.is_authenticated:
-            raise Exception("Authentication required to create new item.")
-        profile = models.Profile.objects.get(user=user)
-        item = models.Item(name=name, description=description, author=profile)
-        item.save()
-        return CreateItem(item=item)
-
-
-class UpdateItem(graphene.Mutation):
-    class Arguments:
-        id = graphene.ID(required=True)
-        name = graphene.String()
-        description = graphene.String()
-
-    item = graphene.Field(ItemType)
-
-    def mutate(self, info, id, name=None, description=None):
-        try:
-            item = models.Item.objects.get(pk=id)
-        except models.Item.DoesNotExist:
-            raise Exception("Item not found.")
-        if name is not None:
-            item.name = name
-        if description is not None:
-            item.description = description
-
-        item.save()
-        return UpdateItem(item=item)
-
-
-class DeleteItem(graphene.Mutation):
-    class Arguments:
-        id = graphene.ID(required=True)
-
-    success = graphene.Boolean()
-
-    def mutate(self, info, id):
-        try:
-            item = models.Item.objects.get(pk=id)
-            item.delete()
-            return DeleteItem(success=True)
-        except models.Item.DoesNotExist:
-            raise Exception("Item not found.")
-        except Exception as e:
-            raise Exception(f"Error occured: {str(e)}.")
 
 
 # PROFILEs
@@ -171,10 +115,6 @@ class Mutation(graphene.ObjectType):
     refresh_token = graphql_jwt.Refresh.Field()
     # CRUD (posts)
     create_post = CreatePost.Field()
-    # CRUD
-    create_item = CreateItem.Field()
-    update_item = UpdateItem.Field()
-    delete_item = DeleteItem.Field()
     # PROFILEs (create & login)
     create_profile = CreateProfile.Field()
     login_user = LoginUser.Field()

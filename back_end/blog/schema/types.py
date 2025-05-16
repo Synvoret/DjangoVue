@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from graphene_django import DjangoObjectType
 
-from blog import models
+from blog.models import Post, Profile, Tag
 
 
 class UserType(DjangoObjectType):
@@ -11,21 +11,14 @@ class UserType(DjangoObjectType):
 
 class AuthorType(DjangoObjectType):
     class Meta:
-        model = models.Profile
+        model = Profile
 
 
 class PostType(DjangoObjectType):
     class Meta:
-        model = models.Post
+        model = Post
 
 
 class TagType(DjangoObjectType):
     class Meta:
-        model = models.Tag
-
-
-# CRUD
-class ItemType(DjangoObjectType):
-    class Meta:
-        model = models.Item
-        fields = "__all__"
+        model = Tag

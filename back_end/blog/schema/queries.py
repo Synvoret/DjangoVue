@@ -1,9 +1,9 @@
 import graphene
 from django.contrib.auth import get_user_model
-from django.utils import timezone
 
 from blog import models
-from .types import PostType, AuthorType, UserType, ItemType
+
+from .types import AuthorType, PostType, UserType
 
 
 class Query(graphene.ObjectType):
@@ -12,8 +12,6 @@ class Query(graphene.ObjectType):
     post_by_slug = graphene.Field(PostType, slug=graphene.String())
     posts_by_author = graphene.List(PostType, username=graphene.String())
     posts_by_tag = graphene.List(PostType, tag=graphene.String())
-    # CRUD
-    items = graphene.List(ItemType)
     # PROFILEs
     profiles = graphene.List(AuthorType)
     check_auth = graphene.Field(UserType)
@@ -52,10 +50,6 @@ class Query(graphene.ObjectType):
 
     def resolve_users(root, info):
         return get_user_model().objects.all()
-
-    # CRUD
-    def resolve_items(self, info, **kwargs):
-        return models.Item.objects.all()
 
     # PROFILEs
     def resolve_profiles(self, info):
