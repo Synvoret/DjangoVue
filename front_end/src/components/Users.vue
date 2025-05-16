@@ -13,13 +13,15 @@
             console.error('Error fetching users:', error);
         }
     });
-    console.log(users)
+    // console.log(users)
 </script>
 
 <template>
     <ol>
         <li v-for="user in users" :key="user.id">
-            {{ user.username }} {{ user.email }} {{ user.date_joined }}
+            <p>/ {{ user.username }} </p>
+            <p>/ {{ user.email }}</p>
+            <p>/ {{ user.date_joined }}</p>
         </li>
     </ol>
 </template>
