@@ -172,78 +172,88 @@
 <template>
     <table class="item-list">
         <thead>
-            <tr>
-                <th>Poz.</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Author</th>
-                <th v-if="isAuthenticated">Actions</th>
-            </tr>
+        <tr>
+            <th>Poz.</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Author</th>
+            <th v-if="isAuthenticated">Actions</th>
+        </tr>
         </thead>
         <tbody>
-            <tr class="item" v-for="(item, index) in paginatedItems" :key="item.id">
-                <td>{{ displayPosition(index) }}</td>
-                <td v-if="editingItem === item.id"><input v-model="editedItem.name"/></td>
-                <td v-else>{{ item.name }}</td>
-                <td v-if="editingItem === item.id"><input v-model="editedItem.description"/></td>
-                <td v-else>{{ item.description }}</td>
-                <td>{{ item.author.user.username }}</td>
-                <td v-if="isAuthenticated" class="button-container">
-                    <CrudButton v-if="editingItem === item.id" label="A" buttonClass="edited" @click="saveEditedItem"/>
-                    <CrudButton v-if="editingItem === item.id" label="X" buttonClass="cancel" @click="cancelEditing"/>
-                    <CrudButton v-else label="E" buttonClass="edit" @click="startEditing(item)"/>
-                    <CrudButton label="D" buttonClass="delete" @click="removeItem(item.id)"/>
-                </td>
-            </tr>
-            <tr class="item" v-if="isCreating">
-                <td>{{ localItems.length + 1  }}</td>
-                <td><input v-model="newItem.name" placeholder="*name" autofocus/></td>
-                <td><input v-model="newItem.description" placeholder="*description"/></td>
-                <td style="color: orange;">{{ currentUser }}</td>
-                <td v-if="isAuthenticated" class="button-container">
-                    <CrudButton label="A" buttonClass="create" @click="saveNewItem"/>
-                    <CrudButton label="X" buttonClass="cancel" @click="cancelCreating"/>
-                </td>
-            </tr>
+        <tr class="item" v-for="(item, index) in paginatedItems" :key="item.id">
+            <td :data-label="'Poz.'">{{ displayPosition(index) }}</td>
+            <td v-if="editingItem === item.id">
+            <input v-model="editedItem.name" />
+            </td>
+            <td v-else :data-label="'Name'">{{ item.name }}</td>
 
-            <tr class="item" v-else-if="isAuthenticated">
-                <td>{{ localItems.length + 1 }}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td class="button-container">
-                    <CrudButton label="C" buttonClass="create" @click="creatingItem"/>
-                </td>
-            </tr>
+            <td v-if="editingItem === item.id">
+            <input v-model="editedItem.description" />
+            </td>
+            <td v-else :data-label="'Description'">{{ item.description }}</td>
 
+            <td :data-label="'Author'">{{ item.author.user.username }}</td>
+
+            <td v-if="isAuthenticated" class="button-container" :data-label="'Actions'">
+            <CrudButton v-if="editingItem === item.id" label="A" buttonClass="edited" @click="saveEditedItem" />
+            <CrudButton v-if="editingItem === item.id" label="X" buttonClass="cancel" @click="cancelEditing" />
+            <CrudButton v-else label="E" buttonClass="edit" @click="startEditing(item)" />
+            <CrudButton label="D" buttonClass="delete" @click="removeItem(item.id)" />
+            </td>
+        </tr>
+
+        <tr class="item" v-if="isCreating">
+            <td :data-label="'Poz.'">{{ localItems.length + 1 }}</td>
+            <td :data-label="'Name'"><input v-model="newItem.name" placeholder="*name" autofocus /></td>
+            <td :data-label="'Description'"><input v-model="newItem.description" placeholder="*description" /></td>
+            <td :data-label="'Author'" style="color: orange;">{{ currentUser }}</td>
+            <td v-if="isAuthenticated" class="button-container" :data-label="'Actions'">
+            <CrudButton label="A" buttonClass="create" @click="saveNewItem" />
+            <CrudButton label="X" buttonClass="cancel" @click="cancelCreating" />
+            </td>
+        </tr>
+
+        <tr class="item" v-else-if="isAuthenticated">
+            <td :data-label="'Poz.'">{{ localItems.length + 1 }}</td>
+            <td :data-label="'Name'"><span>~</span></td>
+            <td :data-label="'Description'"><span>~</span></td>
+            <td :data-label="'Author'"><span>~</span></td>
+            <td class="button-container" :data-label="'Actions'">
+            <CrudButton label="C" buttonClass="create" @click="creatingItem" />
+            </td>
+        </tr>
         </tbody>
     </table>
+
     <div>
-        <label class="required" v-if="!isAuthenticated">  If You want edit table, please login...</label>
+        <label class="required" v-if="!isAuthenticated">If You want edit table, please login...</label>
     </div>
+
     <div v-if="isAuthenticated">
-        <label class="required">A - Accept </label>
-        <label class="required">C - Create </label>
-        <label class="required">D - Delete </label>
-        <label class="required">E - Edit </label>
+        <label class="required">A - Accept</label>
+        <label class="required">C - Create</label>
+        <label class="required">D - Delete</label>
+        <label class="required">E - Edit</label>
         <label class="required">X - Cancel</label>
     </div>
+
     <div>
         <label class="required" v-if="isCreating">* - required</label>
     </div>
 
     <div class="button-container" v-if="totalPages > 1">
-        <CrudButton label="Previous" buttonClass="first" @click="goToPage(currentPage - 1)" :disabled="currentPage === 1"/>
+        <CrudButton label="Previous" buttonClass="first" @click="goToPage(currentPage - 1)" :disabled="currentPage === 1" />
         <span>Page {{ currentPage }} of {{ totalPages }}</span>
-        <CrudButton label="Next" buttonClass="last" @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages"/>
+        <CrudButton label="Next" buttonClass="last" @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages" />
     </div>
 
     <div class="button-container">
-        <label for="itemsPerPage">Items per page </label>
+        <label for="itemsPerPage">Items per page</label>
         <select id="itemsPerPage" v-model="itemsPerPage">
-            <option v-for="n in [5, 10, 15, 20]" :key="n" :value="n">{{ n }}</option>
-            <option value="all">All</option>
+        <option v-for="n in [5, 10, 15, 20]" :key="n" :value="n">{{ n }}</option>
+        <option value="all">All</option>
         </select>
     </div>
-
 </template>
+

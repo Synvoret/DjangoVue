@@ -42,11 +42,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # graphql
+    # GRAPHQL
     "graphene_django",
-    # rest_framework
+    # DRF
     "rest_framework",
     "rest_framework.authtoken",
+    # CORS
     "corsheaders",
     # local apps
     "blog.apps.BlogConfig",
@@ -78,7 +79,7 @@ GRAPHENE = {
 #     "django.contrib.auth.backends.ModelBackend",
 # ]
 
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True  # for cookies
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
@@ -105,11 +106,6 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
     "authorization",
     "x-csrftoken",
 ]
-
-# CORS_ORIGIN_WHITELIST = (
-#     "http://localhost:5173",
-#     "httP://127.0.0.1:5173",
-# )
 
 ROOT_URLCONF = "backend.urls"
 
