@@ -183,12 +183,12 @@
         <tbody>
         <tr class="item" v-for="(item, index) in paginatedItems" :key="item.id">
             <td :data-label="'Poz.'">{{ displayPosition(index) }}</td>
-            <td v-if="editingItem === item.id">
+            <td :data-label="'Name'" v-if="editingItem === item.id">
             <input v-model="editedItem.name" />
             </td>
             <td v-else :data-label="'Name'">{{ item.name }}</td>
 
-            <td v-if="editingItem === item.id">
+            <td :data-label="'Description'" v-if="editingItem === item.id">
             <input v-model="editedItem.description" />
             </td>
             <td v-else :data-label="'Description'">{{ item.description }}</td>
