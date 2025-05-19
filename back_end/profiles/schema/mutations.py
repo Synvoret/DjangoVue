@@ -38,12 +38,12 @@ class LoginUser(graphene.Mutation):
         if user is None:
             raise Exception("Invalid credentials.")
         login(info.context, user)  # login user and session open
-        request = info.context
-        session_key = request.session.session_key
-        is_authenticated = request.user.is_authenticated
+        # request = info.context
+        # session_key = request.session.session_key
+        # is_authenticated = request.user.is_authenticated
 
-        print(f"🔐 SESSION KEY: {session_key}")
-        print(f"👤 USER: {request.user}, Authenticated: {is_authenticated}")
+        # print(f"🔐 SESSION KEY: {session_key}")
+        # print(f"👤 USER: {request.user}, Authenticated: {is_authenticated}")
         return LoginUser(user=user)
 
 
@@ -58,9 +58,9 @@ class LogoutUser(graphene.Mutation):
 
 class Mutation(graphene.ObjectType):
     # JWT
-    token_auth = graphql_jwt.ObtainJSONWebToken.Field()
-    verify_token = graphql_jwt.Verify.Field()
-    refresh_token = graphql_jwt.Refresh.Field()
+    # token_auth = graphql_jwt.ObtainJSONWebToken.Field()
+    # verify_token = graphql_jwt.Verify.Field()
+    # refresh_token = graphql_jwt.Refresh.Field()
     # PROFILEs (create & login)
     create_profile = CreateProfile.Field()
     login_user = LoginUser.Field()
