@@ -1,81 +1,86 @@
-from django.contrib.auth import get_user_model
+import json
+
 from graphene_django.utils.testing import GraphQLTestCase
 
+from django.contrib.auth import get_user_model
 from profiles.models import Profile
-from backend.schema import schema  # zamień 'yourapp' na nazwę twojej aplikacji
+from backend.schema import schema
 
+class ProfilesQueriesTests(GraphQLTestCase):
+    """Test cases for GraphQL queries related to profiles."""
 
-class QueryTestCase(GraphQLTestCase):
-    GRAPHQL_SCHEMA = schema  # ustawiamy nasze schema
+    GRAPHQL_SCHEMA = schema
+    GRAPHQL_URL = "/graphql/"
 
     def setUp(self):
-        self.user = get_user_model().objects.create_user(
-            username="testuser", email="test@example.com", password="testpass123"
-        )
-        self.profile = Profile.objects.create(user=self.user, bio="Bio test")
+        self.user = get_user_model().objects.create_user(username="testuser", email='testuser@testuser.com', password="testpass")
+        self.profile = Profile.objects.create(user=self.user, website='user.com', bio="Test bio")
 
     def test_profiles_query(self):
         response = self.query(
-            '''
+            """
             query {
                 profiles {
-                    id
-                    bio
                     user {
                         username
+                        email
                     }
+                    website
+                    bio
                 }
             }
-            ''',
-            op_name='profiles',
-            variables={'id': 1, 'bio': 'xxx'}
+            """
         )
-
-        content = response.json()
+        content = json.loads(response.content)
         self.assertResponseNoErrors(response)
         self.assertEqual(content["data"]["profiles"][0]["user"]["username"], "testuser")
+        self.assertEqual(content["data"]["profiles"][0]["user"]["email"], "testuser@testuser.com")
+        self.assertEqual(content["data"]["profiles"][0]["website"], "user.com")
+        self.assertEqual(content["data"]["profiles"][0]["bio"], "Test bio")
 
     def test_users_query(self):
         response = self.query(
-            '''
+            """
             query {
                 users {
                     username
                     email
                 }
             }
-            '''
+            """
         )
-        content = response.json()
+        content = json.loads(response.content)
         self.assertResponseNoErrors(response)
         self.assertEqual(content["data"]["users"][0]["username"], "testuser")
+        self.assertEqual(content["data"]["users"][0]["email"], "testuser@testuser.com")
 
-    def test_check_auth_not_authenticated(self):
+    def test_check_no_auth_query(self):
         response = self.query(
-            '''
+            """
             query {
                 checkAuth {
                     username
-                    email
+                    password
                 }
             }
-            '''
+            """
         )
-        content = response.json()
+        content = json.loads(response.content)
+        self.assertResponseNoErrors(response)
         self.assertIsNone(content["data"]["checkAuth"])
 
-    def test_check_auth_authenticated(self):
-        self.client.login(username="testuser", password="testpass123")
+    def test_check_auth_query(self):
+        self.client.login(username="testuser", password="testpass")
         response = self.query(
-            '''
+            """
             query {
                 checkAuth {
                     username
                     email
                 }
             }
-            '''
+            """
         )
-        content = response.json()
+        content = json.loads(response.content)
         self.assertResponseNoErrors(response)
         self.assertEqual(content["data"]["checkAuth"]["username"], "testuser")

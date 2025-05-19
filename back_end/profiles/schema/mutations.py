@@ -58,9 +58,9 @@ class LogoutUser(graphene.Mutation):
 
 class Mutation(graphene.ObjectType):
     # JWT
-    token_auth = graphql_jwt.ObtainJSONWebToken.Field()
-    verify_token = graphql_jwt.Verify.Field()
-    refresh_token = graphql_jwt.Refresh.Field()
+    # token_auth = graphql_jwt.ObtainJSONWebToken.Field()
+    # verify_token = graphql_jwt.Verify.Field()
+    # refresh_token = graphql_jwt.Refresh.Field()
     # PROFILEs (create & login)
     create_profile = CreateProfile.Field()
     login_user = LoginUser.Field()
