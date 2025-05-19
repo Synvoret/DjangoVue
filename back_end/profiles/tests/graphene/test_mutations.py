@@ -43,18 +43,32 @@ class ProfileMutationsTests(GraphQLTestCase):
                 "password": self.user_data["password"],
                 "website": self.user_data["website"],
                 "bio": self.user_data["bio"],
-            }
+            },
         )
         content = json.loads(response.content)
         self.assertResponseNoErrors(response)
-        self.assertEqual(content["data"]["createProfile"]["user"]["user"]["username"], self.user_data["username"])
-        self.assertTrue(content["data"]["createProfile"]["user"]["user"]["password"] is not None)
-        self.assertEqual(content["data"]["createProfile"]["user"]["website"], self.user_data["website"])
-        self.assertEqual(content["data"]["createProfile"]["user"]["bio"], self.user_data["bio"])
-        self.assertTrue(User.objects.filter(username=self.user_data["username"]).exists())
+        self.assertEqual(
+            content["data"]["createProfile"]["user"]["user"]["username"],
+            self.user_data["username"],
+        )
+        self.assertTrue(
+            content["data"]["createProfile"]["user"]["user"]["password"] is not None
+        )
+        self.assertEqual(
+            content["data"]["createProfile"]["user"]["website"],
+            self.user_data["website"],
+        )
+        self.assertEqual(
+            content["data"]["createProfile"]["user"]["bio"], self.user_data["bio"]
+        )
+        self.assertTrue(
+            User.objects.filter(username=self.user_data["username"]).exists()
+        )
 
     def test_login_user_mutation(self):
-        User.objects.create_user(username=self.user_data["username"], password=self.user_data["password"])
+        User.objects.create_user(
+            username=self.user_data["username"], password=self.user_data["password"]
+        )
         response = self.query(
             """
             mutation LoginUser($username: String!, $password: String!) {
@@ -69,13 +83,17 @@ class ProfileMutationsTests(GraphQLTestCase):
             variables={
                 "username": self.user_data["username"],
                 "password": self.user_data["password"],
-            }
+            },
         )
         content = json.loads(response.content)
         self.assertResponseNoErrors(response)
-        self.assertEqual(content["data"]["loginUser"]["user"]["username"], self.user_data["username"])
+        self.assertEqual(
+            content["data"]["loginUser"]["user"]["username"], self.user_data["username"]
+        )
         self.assertTrue(content["data"]["loginUser"]["user"]["password"] is not None)
-        self.assertTrue(User.objects.filter(username=self.user_data["username"]).exists())
+        self.assertTrue(
+            User.objects.filter(username=self.user_data["username"]).exists()
+        )
 
     def test_login_user_invalid_credentials_mutation(self):
         response = self.query(
@@ -95,8 +113,9 @@ class ProfileMutationsTests(GraphQLTestCase):
         self.assertEqual(content["errors"][0]["message"], "Invalid credentials.")
 
     def test_logout_user_mutation(self):
-        user = User.objects.create_user(username=self.user_data["username"], password=self.user_data["password"])
-        self.client.login(username=self.user_data["username"], password=self.user_data["password"])
+        self.client.login(
+            username=self.user_data["username"], password=self.user_data["password"]
+        )
         response = self.query(
             """
             mutation {

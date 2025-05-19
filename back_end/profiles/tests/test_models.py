@@ -11,7 +11,7 @@ class ProfileModelTests(TestCase):
             username="testuser",
             password="testpass",
             email="testuser@testuser.com",
-            )
+        )
         self.profile = Profile.objects.create(
             user=self.user,
             website="user.com",
@@ -24,7 +24,7 @@ class ProfileModelTests(TestCase):
         self.assertEqual(self.profile.user.email, "testuser@testuser.com")
         self.assertEqual(self.profile.website, "user.com")
         self.assertEqual(self.profile.bio, "Test bio")
-    
+
     def test_profile_str(self):
         """Test the string representation of the profile."""
-        self.assertEqual(str(self.profile), 'testuser')
+        self.assertEqual(str(self.profile), "testuser")
