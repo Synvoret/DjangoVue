@@ -207,7 +207,7 @@
             <td :data-label="'Poz.'">{{ localItems.length + 1 }}</td>
             <td :data-label="'Name'"><input v-model="newItem.name" placeholder="*name" autofocus /></td>
             <td :data-label="'Description'"><input v-model="newItem.description" placeholder="*description" /></td>
-            <td :data-label="'Author'" style="color: orange;">{{ currentUser }}</td>
+            <td :data-label="'Author'"><span style="color: orange;">{{ currentUser }}</span></td>
             <td v-if="isAuthenticated" class="button-container" :data-label="'Actions'">
             <CrudButton label="A" buttonClass="create" @click="saveNewItem" />
             <CrudButton label="X" buttonClass="cancel" @click="cancelCreating" />
