@@ -10,6 +10,7 @@ from backend.schema import schema
 
 class ItemsQueriesTests(GraphQLTestCase):
     """Test cases for GraphQL queries related to items."""
+
     GRAPHQL_SCHEMA = schema
     GRAPHQL_URL = "/graphql/"
 

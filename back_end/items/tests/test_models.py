@@ -6,6 +6,7 @@ from items.models import Item
 
 class ItemModelTests(TestCase):
     """Test cases for the Item model."""
+
     def setUp(self):
         """Set up test data."""
         self.profile = Profile.objects.create(
