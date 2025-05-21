@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     # CORS
     "corsheaders",
+    # django-import-export
+    'import_export',
     # local apps
     "blog.apps.BlogConfig",
     "items.apps.ItemsConfig",
