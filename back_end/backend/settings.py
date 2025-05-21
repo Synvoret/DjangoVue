@@ -50,7 +50,7 @@ INSTALLED_APPS = [
     # CORS
     "corsheaders",
     # django-import-export
-    'import_export',
+    "import_export",
     # local apps
     "blog.apps.BlogConfig",
     "items.apps.ItemsConfig",

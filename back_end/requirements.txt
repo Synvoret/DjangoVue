@@ -9,6 +9,7 @@ django-graphql-jwt==0.4.0
 django-import-export==4.3.7
 djangorestframework==3.16.0
 djangorestframework_simplejwt==5.5.0
+et_xmlfile==2.0.0
 fastdiff==0.3.0
 flake8==7.2.0
 graphene==3.4.3
@@ -20,6 +21,7 @@ isort==6.0.1
 mccabe==0.7.0
 mypy==1.15.0
 mypy_extensions==1.1.0
+openpyxl==3.1.5
 packaging==25.0
 pathspec==0.12.1
 platformdirs==4.3.7
