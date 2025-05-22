@@ -1,18 +1,21 @@
-# views.py
-from django.http import HttpResponse
 import openpyxl
+from django.http import HttpResponse
+from django.http import HttpResponseForbidden
 from items.models import Item
 
 
+# @login_required
 def items_export(request):
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden("You must be logged in")
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Items"
-    ws.append(["ID", "Name", "Description", "Author", "Created At"])
-    for item in Item.objects.all():
+    ws.append(["Index", "Name", "Description", "Author", "Created At"])
+    for index, item in enumerate(Item.objects.all(), start=1):
         ws.append(
             [
-                item.id,
+                index,
                 item.name,
                 item.description,
                 str(item.author) if item.author else "No Author",
