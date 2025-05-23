@@ -31,6 +31,27 @@ class CreateProfile(graphene.Mutation):
         return CreateProfile(user=profile)
 
 
+class DeleteUser(graphene.Mutation):
+    success = graphene.Boolean()
+
+    class Arguments:
+        username = graphene.String(required=True)
+        password = graphene.String(required=True)
+
+    def mutate(self, info, username, password):
+        user = authenticate(username=username, password=password)
+        if user is None:
+            raise Exception("Invalid credentials")
+        try:
+            profile = Profile.objects.get(user=user)
+            profile.delete()
+        except Profile.DoesNotExist:
+            pass
+        user.delete()
+
+        return DeleteUser(success=True)
+
+
 class LoginUser(graphene.Mutation):
     user = graphene.Field(UserType)
 
@@ -43,12 +64,7 @@ class LoginUser(graphene.Mutation):
         if user is None:
             raise Exception("Invalid credentials.")
         login(info.context, user)  # login user and session open
-        # request = info.context
-        # session_key = request.session.session_key
-        # is_authenticated = request.user.is_authenticated
 
-        # print(f"🔐 SESSION KEY: {session_key}")
-        # print(f"👤 USER: {request.user}, Authenticated: {is_authenticated}")
         return LoginUser(user=user)
 
 
@@ -68,6 +84,7 @@ class Mutation(graphene.ObjectType):
     refresh_token = graphql_jwt.Refresh.Field()
     # PROFILEs (create & login)
     create_profile = CreateProfile.Field()
+    delete_user = DeleteUser.Field()
     login_user = LoginUser.Field()
     logout_user = LogoutUser.Field()
 

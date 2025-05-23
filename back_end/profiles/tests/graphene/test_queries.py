@@ -45,6 +45,38 @@ class ProfilesQueriesTests(GraphQLTestCase):
         self.assertEqual(content["data"]["profiles"][0]["website"], "user.com")
         self.assertEqual(content["data"]["profiles"][0]["bio"], "Test bio")
 
+    def test_my_user_no_auth(self):
+        response = self.query(
+            """
+            query {
+                myUser {
+                    username
+                    email
+                }
+            }
+            """
+        )
+        content = json.loads(response.content)
+        self.assertResponseNoErrors(response)
+        self.assertIsNone(content["data"]["myUser"])
+
+    def test_my_user_auth(self):
+        self.client.login(username="testuser", password="testpass")
+        response = self.query(
+            """
+            query {
+                myUser {
+                    username
+                    email
+                }
+            }
+            """
+        )
+        content = json.loads(response.content)
+        self.assertResponseNoErrors(response)
+        self.assertEqual(content["data"]["myUser"]["username"], "testuser")
+        self.assertEqual(content["data"]["myUser"]["email"], "testuser@testuser.com")
+
     def test_users_query(self):
         response = self.query(
             """

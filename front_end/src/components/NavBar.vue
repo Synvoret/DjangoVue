@@ -14,11 +14,9 @@
         <RouterLink to="/items">Items</RouterLink>
         <RouterLink to="/users">Users</RouterLink>
         <RouterLink v-if="!isAuthenticated" to="/login">Login</RouterLink>
-        <a v-else href="#" @click.prevent="logout">
-            Logout
-            <span class="username">{{ currentUser }}</span>
-        </a>
+        <RouterLink v-else to="#" @click.prevent="logout">Logout</RouterLink>
         <RouterLink to="/register" v-if="!isAuthenticated">Register</RouterLink>
+        <RouterLink v-else to="/user">User <span class="username">{{ currentUser }}</span></RouterLink>
     </nav>
 </template>
 

@@ -66,6 +66,51 @@ class ProfileMutationsTests(GraphQLTestCase):
             User.objects.filter(username=self.user_data["username"]).exists()
         )
 
+    def test_delete_user_mutation(self):
+        # create profile
+        self.query(
+            """
+            mutation CreateProfile($username: String!, $password: String!, $website: String, $bio: String) {
+                createProfile(username: $username, password: $password, website: $website, bio: $bio) {
+                    user {
+                        user {
+                            username
+                            password
+                        }
+                        website
+                        bio
+                    }
+                }
+            }
+            """,
+            variables={
+                "username": self.user_data["username"],
+                "password": self.user_data["password"],
+                "website": self.user_data["website"],
+                "bio": self.user_data["bio"],
+            },
+        )
+        # delete profile
+        response = self.query(
+            """
+            mutation DeleteUser($username: String!, $password: String!) {
+                deleteUser(username: $username, password: $password) {
+                    success
+                }
+            }
+            """,
+            variables={
+                "username": self.user_data["username"],
+                "password": self.user_data["password"],
+            },
+        )
+        content = json.loads(response.content)
+        self.assertResponseNoErrors(response)
+        self.assertTrue(content["data"]["deleteUser"]["success"])
+        self.assertFalse(
+            User.objects.filter(username=self.user_data["username"]).exists()
+        )
+
     def test_login_user_mutation(self):
         User.objects.create_user(
             username=self.user_data["username"], password=self.user_data["password"]
