@@ -40,3 +40,5 @@ class ItemResource(resources.ModelResource):
 class ItemAdmin(ImportExportModelAdmin):
     resource_class = ItemResource
     list_display = ["id", "name", "description", "author", "created_at"]
+    list_filter = ["author", "created_at"]
+    search_fields = ["name", "description"]

@@ -15,13 +15,18 @@ class CreateProfile(graphene.Mutation):
     class Arguments:
         username = graphene.String(required=True)
         password = graphene.String(required=True)
+        email = graphene.String()
         website = graphene.String()
         bio = graphene.String()
 
-    def mutate(self, info, username, password, website=None, bio=None):
+    def mutate(self, info, username, password, email=None, website=None, bio=None):
         if User.objects.filter(username=username).exists():
             raise Exception("Username already taken.")
-        user = User.objects.create_user(username=username, password=password)
+        if User.objects.filter(email=email).exists():
+            raise Exception("Email already taken.")
+        user = User.objects.create_user(
+            username=username, email=email, password=password
+        )
         profile = Profile.objects.create(user=user, website=website, bio=bio)
         return CreateProfile(user=profile)
 

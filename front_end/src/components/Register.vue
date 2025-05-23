@@ -6,18 +6,20 @@
 
     const username = ref('');
     const password = ref('');
+    const email = ref('');
     const website = ref('');
     const bio = ref('');
     const success = ref(false);
 
     const { mutate: CreateProfile, loading, error } = useMutation(
         gql`
-            mutation CreateProfile($username: String!, $password: String!, $website: String, $bio: String) {
-                createProfile(username: $username, password: $password, website: $website, bio: $bio) {
+            mutation CreateProfile($username: String!, $password: String!, $email: String, $website: String, $bio: String) {
+                createProfile(username: $username, password: $password, email: $email, website: $website, bio: $bio) {
                     user {
                         id
                         user {
                             username
+                            email
                         }
                         website
                         bio
@@ -30,12 +32,13 @@
             const response = await CreateProfile({
                 username: username.value,
                 password: password.value,
+                email: email.value,
                 website: website.value,
                 bio: bio.value,
             });
             success.value = true;
             const createdProfile = response.data.createProfile.user.user.username;
-            console.log(createdProfile)
+            // console.log(createdProfile)
         } catch (error) {
             console.error("GraphQL Error:", error);
         }
@@ -51,6 +54,10 @@
         <div class="form-group">
             <label for="password">*Password: </label>
             <input type="password" v-model="password" placeholder="password" required/>
+        </div>
+        <div class="form-group">
+            <label for="email">*Email: </label>
+            <input type="email" v-model="email" placeholder="email" required/>
         </div>
         <div class="form-group">
             <label for="website">Website: </label>
