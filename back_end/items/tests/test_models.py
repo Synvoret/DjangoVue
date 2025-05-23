@@ -1,7 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-from profiles.models import Profile
+
 from items.models import Item
+from profiles.models import Profile
 
 
 class ItemModelTests(TestCase):

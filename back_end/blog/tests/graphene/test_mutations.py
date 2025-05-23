@@ -1,9 +1,10 @@
 import json
 
-from graphene_django.utils.testing import GraphQLTestCase
 from django.contrib.auth import get_user_model
-from profiles.models import Profile
 from django.utils import timezone
+from graphene_django.utils.testing import GraphQLTestCase
+
+from profiles.models import Profile
 
 
 class CreatePostTestCase(GraphQLTestCase):

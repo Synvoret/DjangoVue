@@ -1,10 +1,11 @@
 import json
 
-from graphene_django.utils.testing import GraphQLTestCase
 from django.contrib.auth import get_user_model
+from graphene_django.utils.testing import GraphQLTestCase
+
+from backend.schema import schema
 from blog.models import Post, Tag
 from profiles.models import Profile
-from backend.schema import schema
 
 
 class BlogQueryTestCase(GraphQLTestCase):

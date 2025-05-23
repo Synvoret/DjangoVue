@@ -1,6 +1,7 @@
 import json
-from django.test import Client
+
 from django.contrib.auth.models import User
+from django.test import Client
 from graphene_django.utils.testing import GraphQLTestCase
 
 from backend.schema import schema

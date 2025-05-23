@@ -1,6 +1,6 @@
+from django.contrib import admin
 from import_export import resources
 from import_export.admin import ExportMixin
-from django.contrib import admin
 
 from items.models import Item
 

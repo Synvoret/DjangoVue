@@ -1,10 +1,12 @@
-from django.test import TestCase, Client
+from io import BytesIO
+
+import openpyxl
 from django.contrib.auth.models import User
+from django.test import Client, TestCase
+from django.urls import reverse
+
 from items.models import Item
 from profiles.models import Profile
-from django.urls import reverse
-import openpyxl
-from io import BytesIO
 
 
 class ItemsExportViewTest(TestCase):

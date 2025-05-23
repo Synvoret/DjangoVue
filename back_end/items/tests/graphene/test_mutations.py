@@ -1,10 +1,11 @@
 import json
+
 from django.contrib.auth import get_user_model
 from graphene_django.utils.testing import GraphQLTestCase
 
-from profiles.models import Profile
-from items.models import Item
 from backend.schema import schema
+from items.models import Item
+from profiles.models import Profile
 
 
 class ItemMutationsTests(GraphQLTestCase):
