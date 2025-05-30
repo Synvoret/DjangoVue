@@ -42,6 +42,12 @@ frontend:
 	@echo "🔍 Checking Vite port $(VITE_PORT)..."
 	@$(MAKE) kill-port PORT=$(VITE_PORT)
 	cd front_end && \
+	if [ ! -d "node_modules" ]; then \
+		echo "📦 Installing Node.js dependencies..."; \
+		npm install; \
+	else \
+		echo "✅ Node.js dependencies already installed."; \
+	fi && \
 	echo "🚀 Starting Vite on port $(VITE_PORT)..." && \
 	npm run dev -- --port=$(VITE_PORT)
 
