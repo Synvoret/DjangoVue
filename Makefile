@@ -23,7 +23,7 @@ backend: setup-venv
 	echo "🛠 Running migrations..." && \
 	venv/bin/python manage.py makemigrations && \
 	venv/bin/python manage.py migrate && \
-	venv/bin/python create_superuser.py && \
+	venv/bin/python manage.py shell < scripts/create_superuser.py && \
 	echo "🚀 Starting Django on port $(DJANGO_PORT)..." && \
 	venv/bin/python manage.py runserver 0.0.0.0:$(DJANGO_PORT) &
 

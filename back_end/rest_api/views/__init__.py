@@ -1,4 +1,3 @@
-from .blog_view import BlogView
-from .blog_view import BlogDetailView
+from .blog_view import BlogDetailView, BlogView
 from .item_view import ItemViewset
 from .user_list import UserListView

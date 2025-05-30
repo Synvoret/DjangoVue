@@ -1,7 +1,7 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from rest_api.views import BlogView, ItemViewset, UserListView, BlogDetailView
+from rest_api.views import BlogDetailView, BlogView, ItemViewset, UserListView
 
 router = DefaultRouter()
 router.register(r"items", ItemViewset, basename="item")
